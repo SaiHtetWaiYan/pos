@@ -21,10 +21,11 @@
             </div>
             <div class="mt-5 flex-1 h-0 overflow-y-auto">
               <nav class="space-y-1">
-                <a  v-for="item in navigation" :key="item.name" :href="item.href" :class="[item.current ? 'border-s-[3px] border-blue-500 bg-blue-50 text-blue-700' : 'border-l-[3px] border-transparent text-gray-500 hover:border-gray-100 hover:bg-gray-50 hover:text-gray-700', 'flex  items-center gap-2 px-4 py-3']">
+                <router-link  v-for="item in navigation" :key="item.name" v-bind:class="[currentRouteName === item.href ? 'border-s-[3px] border-blue-500 bg-blue-50 text-blue-700' : 'border-l-[3px] border-transparent text-gray-500 hover:border-gray-100 hover:bg-gray-50 hover:text-gray-700', 'flex  items-center gap-2 px-4 py-3']"  :to="item.href" >
                   <component :is="item.icon" class="h-5 w-5 opacity-75"   aria-hidden="true" />
+
                   <span class="text-md font-medium"> {{ item.name }} </span>
-                </a>
+                </router-link>
               </nav>
             </div>
           </div>
@@ -46,11 +47,11 @@
 
           <nav aria-label="Main Nav" class="flex flex-col  pb-4 space-y-1">
 
-            <a  v-for="item in navigation" :key="item.name" :href="item.href" :class="[item.current ? 'border-s-[3px] border-blue-500 bg-blue-50 text-blue-700' : 'border-l-[3px] border-transparent text-gray-500 hover:border-gray-100 hover:bg-gray-50 hover:text-gray-700', 'flex  items-center gap-2 px-4 py-3']">
+            <router-link  v-for="item in navigation" :key="item.name" v-bind:class="[currentRouteName === item.href ? 'border-s-[3px] border-blue-500 bg-blue-50 text-blue-700' : 'border-l-[3px] border-transparent text-gray-500 hover:border-gray-100 hover:bg-gray-50 hover:text-gray-700', 'flex  items-center gap-2 px-4 py-3']"  :to="item.href" >
               <component :is="item.icon" class="h-5 w-5 opacity-75"   aria-hidden="true" />
 
               <span class="text-md font-medium"> {{ item.name }} </span>
-            </a>
+            </router-link>
 
 
           </nav>
@@ -83,10 +84,8 @@
               </div>
               <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                 <MenuItems class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  <button @click="logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700">Log out</button>
-<!--                  <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">-->
-<!--                    <a :href="item.href" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">{{ item.name }}</a>-->
-<!--                  </MenuItem>-->
+                  <router-link :to="{name: 'app.profile'}" class="block px-4 py-2 text-sm hover:bg-blue-50 hover:text-blue-700 text-gray-500">Profile</router-link>
+                  <button @click="logout" class="block w-full text-left px-4 py-2 text-sm hover:bg-blue-50 hover:text-blue-700 text-gray-500">Log out</button>
                 </MenuItems>
               </transition>
             </Menu>
@@ -132,9 +131,9 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
+  { name: 'Dashboard', href: '/app/dashboard', icon: HomeIcon  },
+  { name: 'Team', href: '#', icon: UsersIcon },
+  { name: 'Projects', href: '#', icon: FolderIcon },
 ]
 
 export default {
@@ -166,6 +165,12 @@ export default {
       })
       useAuthStore().destoryUser()
       router.push('/')
+    }
+  },
+  computed: {
+    currentRouteName() {
+
+      return this.$route.path;
     }
   }
 }

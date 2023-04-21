@@ -25,6 +25,11 @@ const routes= [
                 name: 'app.dashboard',
                 component: () => import('@/views/Dashboard/Index.vue'),
             },
+            {
+                path: 'profile',
+                name: 'app.profile',
+                component: () => import('@/views/Dashboard/Profile.vue'),
+            },
 
         ]
 
