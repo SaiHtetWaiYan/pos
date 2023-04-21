@@ -55,26 +55,31 @@
           <div class="hidden lg:block">
             <h2 class="text-2xl font-bold text-gray-900">Login</h2>
           </div>
+          <ul class="list-disc mt-4 ml-4" v-if="error">
+            <li class="text-sm font-medium text-red-600">{{error}}</li>
 
-          <form action="#" class="mt-6 grid grid-cols-6 gap-6">
+          </ul>
+          <form @submit.prevent="Login" class="mt-6 grid grid-cols-6 gap-6">
 
             <div class="col-span-6">
               <label class="block text-sm font-medium text-gray-700" for="Email">
                 Email
               </label>
 
-              <input id="Email" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm" name="email" type="email"/>
+              <input id="Email" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm" required v-model="email" name="email" type="email"/>
             </div>
 
             <div class="col-span-6">
               <label class="block text-sm font-medium text-gray-700" for="Password">
                 Password
               </label>
-
-              <input id="Password" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm" name="password" type="password"/>
+              <div class="relative">
+                <span class="absolute inset-y-0 right-0 flex items-center pl-2 mr-2" @click="passwordVisibility">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </span>
+              <input id="Password" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm" required v-model="password" name="password" :type="passwordFieldType"/>
+              </div>
             </div>
-
-
             <div class="col-span-6">
               <label class="flex gap-4" for="MarketingAccept">
                 <input id="MarketingAccept" class="h-5 w-5 rounded-md border-gray-200 bg-white shadow-sm" name="marketing_accept" type="checkbox"/>
@@ -83,8 +88,6 @@
               </span>
               </label>
             </div>
-
-
             <div class="col-span-6 sm:flex sm:items-center sm:gap-4">
               <button class="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500">
                 Login
@@ -104,5 +107,37 @@
 </template>
 
 <script>
+import axiosInstance from "@/axios.js";
+import {useAuthStore} from "@/store/AuthStore.js";
+import router from "@/router/index.js";
+export default {
+  data(){
+    return{
+      email:null,
+      password:null,
+      error: null,
+      passwordFieldType: 'password'
+    }
+  },
+  methods:{
+    async Login(){
+      try {
+        const response = await axiosInstance.post('/api/login', {
+          email: this.email,
+          password: this.password
+        })
+        console.log(response.data)
+        useAuthStore().setUser(response)
+        router.push('/app/dashboard')
+      }catch (error)
+      {
+        this.error = error.response.data.error
+      }
+    },
+    passwordVisibility(){
+      this.passwordFieldType = this.passwordFieldType === "password" ? "text" : "password";
 
+    }
+  }
+}
 </script>

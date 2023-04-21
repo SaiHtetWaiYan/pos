@@ -1,21 +1,24 @@
 import {createRouter, createWebHistory} from "vue-router";
+import {useAuthStore} from "@/store/AuthStore.js";
 import Layout from "@/components/Dashboard/Layout.vue"
 const routes= [
     {
         path: '/',
         name: 'login',
+        meta: { requiresGuest: true },
         component: () => import('@/views/Auth/Login.vue'),
     },
     {
         path: '/register',
         name: 'register',
+        meta: { requiresGuest: true },
         component: () => import('@/views/Auth/Register.vue'),
     },
     {
         path: '/app',
         name: 'app',
         component: Layout,
-        //meta: { requiresAuth: true },
+        meta: { requiresAuth: true },
         children: [
             {
                 path: 'dashboard',
@@ -33,5 +36,22 @@ const router = createRouter({
     history: createWebHistory(),
     routes,
 })
+
+router.beforeEach((to, from, next) => {
+    const authStore = useAuthStore();
+    const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+    const requiresGuest = to.matched.some((record) => record.meta.requiresGuest);
+
+    if (requiresAuth && !authStore.token) {
+        // If the user is not authenticated and the route requires authentication, redirect to the login page
+        next('/');
+    } else if (requiresGuest && authStore.token) {
+        // If the user is authenticated and the route requires guest access, redirect to the home page
+        next('/app/dashboard');
+    } else {
+        // Otherwise, allow the user to proceed to the requested page
+        next();
+    }
+});
 
 export default router;

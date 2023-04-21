@@ -1,17 +1,15 @@
 import axios from 'axios';
-
+import {useAuthStore} from "@/store/AuthStore.js";
 const axiosInstance = axios.create({
-    baseURL: '/api'
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+
 });
-
+const authStore = useAuthStore()
 axiosInstance.interceptors.request.use(function (config) {
-    const csrfToken = document.head.querySelector('meta[name="csrf-token"]');
-
-    if (csrfToken) {
-        config.headers['X-CSRF-TOKEN'] = csrfToken.content;
+    if (authStore.token) {
+        config.headers.Authorization = `Bearer ${authStore.token}`
     }
-
-    return config;
+    return config
 });
 
 export default axiosInstance;
