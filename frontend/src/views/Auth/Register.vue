@@ -24,43 +24,57 @@
           <p class="mt-4 leading-relaxed text-gray-500">
             Sign up for our online POS system today and start managing your business transactions with ease!
           </p>
-
-          <form action="#" class="mt-8 grid grid-cols-6 gap-6">
+          <ul class="list-disc mt-4 ml-4" v-if="nameError">
+            <li class="text-sm font-medium text-red-600" v-if="nameError">{{nameError}}</li>
+          </ul>
+          <ul class="list-disc mt-4 ml-4" v-if="emailError">
+            <li class="text-sm font-medium text-red-600" v-if="emailError">{{emailError}}</li>
+          </ul>
+          <ul class="list-disc mt-4 ml-4" v-if="passwordError" v-for="error in passwordError">
+            <li class="text-sm font-medium text-red-600">{{error}}</li>
+          </ul>
+          <form @submit.prevent="Register" class="mt-8 grid grid-cols-6 gap-6">
             <div class="col-span-6">
               <label for="Name" class="block text-sm font-medium text-gray-700">
                 Profile Name
               </label>
-
-              <input type="text" id="FirstName" name="first_name" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"/>
+              <input type="text" id="Name" name="name" required v-model="name" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"/>
             </div>
 
             <div class="col-span-6">
               <label for="Email" class="block text-sm font-medium text-gray-700">
                 Email
               </label>
-
-              <input type="email" id="Email" name="email" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"/>
+              <input type="email" id="Email" name="email" required v-model="email" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"/>
             </div>
 
             <div class="col-span-6 sm:col-span-3">
               <label for="Password" class="block text-sm font-medium text-gray-700">
                 Password
               </label>
-
-              <input type="password" id="Password" name="password" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"/>
+              <div class="relative">
+                <span class="absolute inset-y-0 right-0 flex items-center pl-2 mr-2" @click="passwordVisibility">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </span>
+                <input id="Password" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm" required v-model="password" name="password" :type="passwordFieldType"/>
+              </div>
             </div>
 
             <div class="col-span-6 sm:col-span-3">
               <label for="PasswordConfirmation" class="block text-sm font-medium text-gray-700">
                 Password Confirmation
               </label>
-
-              <input type="password" id="PasswordConfirmation" name="password_confirmation" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"/>
+              <div class="relative">
+                <span class="absolute inset-y-0 right-0 flex items-center pl-2 mr-2" @click="password_confirmationVisibility">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </span>
+                <input id="Password_confirmation" class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm" required v-model="password_confirmation" name="password" :type="password_confirmationFieldType"/>
+              </div>
             </div>
 
             <div class="col-span-6">
               <label for="MarketingAccept" class="flex gap-4">
-                <input type="checkbox" id="MarketingAccept" name="marketing_accept" class="h-5 w-5 rounded-md border-gray-200 bg-white shadow-sm"/>
+                <input type="checkbox" id="MarketingAccept" required name="marketing_accept" class="h-5 w-5 rounded-md border-gray-200 bg-white shadow-sm"/>
                 <span class="text-sm text-gray-700">
                 I want to receive emails about events, product updates and company announcements.
               </span>
@@ -97,5 +111,59 @@
 </template>
 
 <script>
+import axiosInstance from "@/axios.js";
+import {useAuthStore} from "@/store/AuthStore.js";
+import router from "@/router/index.js";
 
+export default {
+  data(){
+    return{
+      name: null,
+      email: null,
+      password: null,
+      password_confirmation: null,
+      passwordFieldType: 'password',
+      password_confirmationFieldType: 'password',
+      nameError: null,
+      emailError: null,
+      passwordError: null
+    }
+  },
+  methods:{
+    async Register(){
+      try{
+        const response = await axiosInstance.post('/api/register',{
+          name : this.name,
+          email : this.email,
+          password : this.password,
+          password_confirmation : this.password_confirmation
+        })
+        useAuthStore().setUser(response)
+        router.push('/app/dashboard')
+      }catch (error)
+      {
+        console.log(error)
+        if(error.response.data.errors.name)
+        {
+          this.nameError = error.response.data.errors.name[0]
+        }
+        if(error.response.data.errors.email)
+        {
+          this.emailError = error.response.data.errors.email[0]
+        }
+        if(error.response.data.errors.password)
+        {
+          this.passwordError = error.response.data.errors.password
+        }
+      }
+    },
+    passwordVisibility(){
+      this.passwordFieldType = this.passwordFieldType === "password" ? "text" : "password";
+    },
+    password_confirmationVisibility(){
+      this.password_confirmationFieldType = this.password_confirmationFieldType === "password" ? "text" : "password";
+
+    }
+  }
+}
 </script>

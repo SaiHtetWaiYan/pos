@@ -57,7 +57,6 @@
           </div>
           <ul class="list-disc mt-4 ml-4" v-if="error">
             <li class="text-sm font-medium text-red-600">{{error}}</li>
-
           </ul>
           <form @submit.prevent="Login" class="mt-6 grid grid-cols-6 gap-6">
 
@@ -110,6 +109,7 @@
 import axiosInstance from "@/axios.js";
 import {useAuthStore} from "@/store/AuthStore.js";
 import router from "@/router/index.js";
+
 export default {
   data(){
     return{
@@ -122,11 +122,11 @@ export default {
   methods:{
     async Login(){
       try {
+
         const response = await axiosInstance.post('/api/login', {
           email: this.email,
           password: this.password
         })
-        console.log(response.data)
         useAuthStore().setUser(response)
         router.push('/app/dashboard')
       }catch (error)

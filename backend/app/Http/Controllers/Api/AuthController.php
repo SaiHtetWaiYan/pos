@@ -7,28 +7,24 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+
+        $validator =$request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|confirmed|string|min:8',
-//            'password' => ['required', 'confirmed', Password::min(8)
-//                ->mixedCase()
-//                ->letters()
-//                ->numbers()
-//                ->symbols()
-//                ->uncompromised(),
-//            ],
+            'password' => ['required', 'confirmed', Password::min(8)
+                ->mixedCase()
+                ->letters()
+                ->numbers()
+                ->symbols()
+                ->uncompromised(),
+            ],
         ]);
-
-        if($validator->fails()){
-            return response()->json(['error', $validator->errors()],401);
-        }
 
         $user = User::create([
             'name' => $validator['name'],
@@ -38,7 +34,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json(['$token' => $token,'user' => $user, 'message' => 'Successfully registered'],200);
+        return response()->json(['token' => $token,'user' => $user, 'message' => 'Successfully registered'],200);
     }
 
     public function login(Request $request)
@@ -48,7 +44,6 @@ class AuthController extends Controller
             $token=  $user->createToken('auth_token')->plainTextToken;
 
             return response()->json(['token' => $token,'user' => $user, 'message' => 'Login Successfully'],200);
-            //return $this->sendResponse($success, 'User login successfully.');
         }
         else{
             return response()->json(['error'=>'Ooops! Something Wrong.'], 401);
@@ -57,8 +52,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        $user = Auth::user();
-        $user->token()->revoke();
+        auth()->user()->tokens()->delete();
 
         return response()->json(['message' => 'Successfully logged out']);
     }
