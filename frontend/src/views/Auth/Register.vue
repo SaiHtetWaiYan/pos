@@ -25,10 +25,10 @@
             Sign up for our online POS system today and start managing your business transactions with ease!
           </p>
           <ul class="list-disc mt-4 ml-4" v-if="nameError">
-            <li class="text-sm font-medium text-red-600" v-if="nameError">{{nameError}}</li>
+            <li class="text-sm font-medium text-red-600">{{nameError}}</li>
           </ul>
           <ul class="list-disc mt-4 ml-4" v-if="emailError">
-            <li class="text-sm font-medium text-red-600" v-if="emailError">{{emailError}}</li>
+            <li class="text-sm font-medium text-red-600">{{emailError}}</li>
           </ul>
           <ul class="list-disc mt-4 ml-4" v-if="passwordError" v-for="error in passwordError">
             <li class="text-sm font-medium text-red-600">{{error}}</li>
