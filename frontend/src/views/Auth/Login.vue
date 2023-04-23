@@ -80,10 +80,10 @@
               </div>
             </div>
             <div class="col-span-6">
-              <label class="flex gap-4" for="MarketingAccept">
-                <input id="MarketingAccept" class="h-5 w-5 rounded-md border-gray-200 bg-white shadow-sm" name="marketing_accept" type="checkbox"/>
+              <label class="flex gap-4" for="remember">
+                <input id="remember" class="h-5 w-5 rounded-md border-gray-200 bg-white shadow-sm" name="remember" value="true"  v-model="remember"  type="checkbox"/>
                 <span class="text-sm text-gray-700">
-               Remember password
+               Remember Me
               </span>
               </label>
             </div>
@@ -115,8 +115,15 @@ export default {
     return{
       email:null,
       password:null,
+      remember: false,
       error: null,
       passwordFieldType: 'password'
+    }
+  },
+  mounted() {
+    if(useAuthStore().remember){
+      this.email = useAuthStore().remember
+      this.remember = true
     }
   },
   methods:{
@@ -128,6 +135,12 @@ export default {
           password: this.password
         })
         useAuthStore().setUser(response)
+        if(this.remember === true){
+              useAuthStore().rememberEmail()
+        }
+        else {
+              useAuthStore().removeRemember()
+        }
         router.push('/app/dashboard')
       }catch (error)
       {
@@ -137,7 +150,7 @@ export default {
     passwordVisibility(){
       this.passwordFieldType = this.passwordFieldType === "password" ? "text" : "password";
 
-    }
+    },
   }
 }
 </script>

@@ -14,7 +14,8 @@ export const useAuthStore = defineStore({
         street_address: null,
         city: null,
         state: null,
-        country: null
+        country: null,
+        remember: null
     }),
     getters: {
         isAuthenticated: (state) => !!state.token,
@@ -53,6 +54,12 @@ export const useAuthStore = defineStore({
             this.city = null
             this.state = null
             this.country = null
+        },
+        rememberEmail(){
+            this.remember = this.email
+        },
+        removeRemember(){
+            this.remember = null
         }
     },
     persist: true,
