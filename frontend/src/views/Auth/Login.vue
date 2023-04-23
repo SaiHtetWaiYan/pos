@@ -110,7 +110,9 @@ import axiosInstance from "@/axios.js";
 import {useAuthStore} from "@/store/AuthStore.js";
 import router from "@/router/index.js";
 
+
 export default {
+
   data(){
     return{
       email:null,
@@ -129,7 +131,6 @@ export default {
   methods:{
     async Login(){
       try {
-
         const response = await axiosInstance.post('/api/login', {
           email: this.email,
           password: this.password

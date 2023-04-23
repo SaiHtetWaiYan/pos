@@ -277,7 +277,7 @@ export default {
           new_password: this.new_password,
           new_password_confirmation: this.confirm_new_password
         },config)
-        this.msg = 'Profile updated successfully!'
+        this.msg = 'Profile successfully updated!'
         this.alert()
         useAuthStore().updateUser(response)
         this.photo = null
@@ -314,7 +314,7 @@ export default {
           state: this.state,
           country: this.country
         })
-        this.msg = 'Personal Information updated successfully!'
+        this.msg = 'Personal Information successfully updated!'
         this.alert()
         useAuthStore().updatePersonalInfo(response)
       }catch (errors)

@@ -131,14 +131,14 @@ import {
   HomeIcon,
   Bars3Icon,
   XMarkIcon,
-  UsersIcon,
-  FolderIcon
+  TagIcon,
+  Square3Stack3DIcon
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
   { name: 'Dashboard', href: '/app/dashboard', icon: HomeIcon  },
-  { name: 'Team', href: '#', icon: UsersIcon },
-  { name: 'Projects', href: '#', icon: FolderIcon },
+  { name: 'Brand', href: '/app/brand', icon: TagIcon  },
+  { name: 'Category', href: '/app/category', icon: Square3Stack3DIcon },
 ]
 const imgUrl = import.meta.env.VITE_API_BASE_URL+'/users/'
 export default {

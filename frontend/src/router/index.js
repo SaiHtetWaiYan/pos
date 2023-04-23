@@ -30,6 +30,16 @@ const routes= [
                 name: 'app.profile',
                 component: () => import('@/views/Dashboard/Profile.vue'),
             },
+            {
+                path: 'brand',
+                name: 'app.brand',
+                component: () => import('@/views/Dashboard/Brand/Index.vue'),
+            },
+            {
+                path: 'category',
+                name: 'app.category',
+                component: () => import('@/views/Dashboard/Category/Index.vue'),
+            },
 
         ]
 

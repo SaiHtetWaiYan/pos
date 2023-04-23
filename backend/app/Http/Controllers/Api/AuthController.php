@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 use App\Models\User;
 use App\Models\Userinfo;
+use App\Models\Brand;
+use App\Models\Category;
 
 class AuthController extends Controller
 {
@@ -142,8 +144,11 @@ class AuthController extends Controller
             return response()->json(["passwordError"=>"Password Doesn't match!" ],401);
         }
         Userinfo::where('user_id', $request->id)->delete();
+        Brand::where('user_id',$request->id)->forceDelete();
+        Category::where('user_id',$request->id)->forceDelete();
         auth()->user()->tokens()->delete();
         User::find($request->id)->forceDelete();
+
         return response()->json(['message' => 'Successfully account deleted']);
 
     }
