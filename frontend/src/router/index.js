@@ -40,6 +40,17 @@ const routes= [
                 name: 'app.category',
                 component: () => import('@/views/Dashboard/Category/Index.vue'),
             },
+            {
+                path: 'supplier',
+                name: 'app.supplier',
+                component: () => import('@/views/Dashboard/Supplier/Index.vue'),
+            },
+            {
+                path: 'product',
+                name: 'app.product',
+                component: () => import('@/views/Dashboard/Product/Index.vue'),
+            },
+
 
         ]
 

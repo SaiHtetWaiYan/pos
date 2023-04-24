@@ -11,7 +11,7 @@ use App\Models\User;
 use App\Models\Userinfo;
 use App\Models\Brand;
 use App\Models\Category;
-
+use App\Models\Supplier;
 class AuthController extends Controller
 {
     public function register(Request $request)
@@ -146,6 +146,7 @@ class AuthController extends Controller
         Userinfo::where('user_id', $request->id)->delete();
         Brand::where('user_id',$request->id)->forceDelete();
         Category::where('user_id',$request->id)->forceDelete();
+        Supplier::where('user_id',$request->id)->forceDelete();
         auth()->user()->tokens()->delete();
         User::find($request->id)->forceDelete();
 

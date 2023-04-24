@@ -69,10 +69,29 @@
           <div class="flex-1 flex">
           </div>
           <div class="ml-4 flex items-center md:ml-6">
-            <button type="button" class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              <span class="sr-only">View notifications</span>
-              <BellIcon class="h-6 w-6" aria-hidden="true" />
-            </button>
+            <Popover class="relative">
+              <PopoverButton class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <span class="sr-only">View notifications</span>
+                  <BellIcon class="h-6 w-6" aria-hidden="true" />
+              </PopoverButton>
+              <transition
+                  enter-active-class="transition duration-200 ease-out"
+                  enter-from-class="translate-y-1 opacity-0"
+                  enter-to-class="translate-y-0 opacity-100"
+                  leave-active-class="transition duration-150 ease-in"
+                  leave-from-class="translate-y-0 opacity-100"
+                  leave-to-class="translate-y-1 opacity-0"
+              >
+              <PopoverPanel class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div class="mx-4 my-2 flex items-center">
+                  <ExclamationTriangleIcon class="h-6 w-6 text-yellow-600" aria-hidden="true"/>
+                  <div class="ml-2">
+                  <p class="text-inline text-sm text-gray-500">There's no announcement yet !</p>
+                  </div>
+                </div>
+              </PopoverPanel>
+              </transition>
+            </Popover>
 
             <!-- Profile dropdown -->
             <Menu as="div" class="ml-3 relative">
@@ -125,20 +144,28 @@ import {
   MenuItems,
   TransitionChild,
   TransitionRoot,
+  Popover,
+  PopoverButton,
+  PopoverPanel
 } from '@headlessui/vue'
 import {
   BellIcon,
-  HomeIcon,
+  ChartPieIcon,
   Bars3Icon,
   XMarkIcon,
   TagIcon,
-  Square3Stack3DIcon
+  Square3Stack3DIcon,
+  CubeIcon,
+  ExclamationTriangleIcon,
+  TruckIcon
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
-  { name: 'Dashboard', href: '/app/dashboard', icon: HomeIcon  },
+  { name: 'Dashboard', href: '/app/dashboard', icon: ChartPieIcon  },
   { name: 'Brand', href: '/app/brand', icon: TagIcon  },
   { name: 'Category', href: '/app/category', icon: Square3Stack3DIcon },
+  { name: 'Supplier', href: '/app/supplier', icon: TruckIcon },
+  { name: 'Product', href: '/app/product', icon: CubeIcon },
 ]
 const imgUrl = import.meta.env.VITE_API_BASE_URL+'/users/'
 export default {
@@ -154,6 +181,10 @@ export default {
     BellIcon,
     Bars3Icon,
     XMarkIcon,
+    Popover,
+    PopoverButton,
+    PopoverPanel,
+    ExclamationTriangleIcon
   },
   setup() {
     const sidebarOpen = ref(false)

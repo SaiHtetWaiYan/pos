@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\SupplierController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -32,7 +33,6 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('update',[BrandController::class,'update']);
         Route::post('delete',[BrandController::class,'delete']);
         Route::post('restore',[BrandController::class,'restore']);
-
     });
 
     Route::prefix('category')->group(function () {
@@ -41,6 +41,14 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('update',[CategoryController::class,'update']);
         Route::post('delete',[CategoryController::class,'delete']);
         Route::post('restore',[CategoryController::class,'restore']);
+    });
+
+    Route::prefix('supplier')->group(function () {
+        Route::post('/',[SupplierController::class, 'index']);
+        Route::post('create',[SupplierController::class,'create']);
+        Route::post('update',[SupplierController::class,'update']);
+        Route::post('delete',[SupplierController::class,'delete']);
+        Route::post('restore',[SupplierController::class,'restore']);
 
     });
 });
