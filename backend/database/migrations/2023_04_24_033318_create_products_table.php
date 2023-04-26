@@ -19,9 +19,11 @@ return new class extends Migration
             $table->integer('supplier_id')->nullable();
             $table->string('name');
             $table->string('code');
+            $table->string('variant');
             $table->text('description')->nullable();
             $table->boolean('is_show');
             $table->string('photo')->nullable();
+            $table->integer('price');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -48,7 +48,7 @@
                     <label for="contact" class="block text-sm font-medium text-gray-700">Contact</label>
                     <textarea
                         class="w-full mt-1  rounded-lg border-gray-200 p-3 text-sm"
-                        rows="8"
+                        rows="3"
                         id="contact" v-model="contact"
                     ></textarea>
                   </div>

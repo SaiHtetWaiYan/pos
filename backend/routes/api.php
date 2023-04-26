@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\SupplierController;
+use App\Http\Controllers\Api\ProductController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -49,6 +50,10 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('update',[SupplierController::class,'update']);
         Route::post('delete',[SupplierController::class,'delete']);
         Route::post('restore',[SupplierController::class,'restore']);
+    });
 
+    Route::prefix('product')->group(function () {
+        Route::get('get-data',[ProductController::class, 'getData']);
+        Route::post('create',[ProductController::class,'create']);
     });
 });

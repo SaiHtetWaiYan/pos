@@ -150,7 +150,7 @@ class AuthController extends Controller
         auth()->user()->tokens()->delete();
         User::find($request->id)->forceDelete();
 
-        return response()->json(['message' => 'Successfully account deleted']);
+        return response()->json(['message' => 'Successfully account deleted'],200);
 
     }
 
@@ -158,7 +158,7 @@ class AuthController extends Controller
     {
         auth()->user()->tokens()->delete();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => 'Successfully logged out'],200);
     }
 
 

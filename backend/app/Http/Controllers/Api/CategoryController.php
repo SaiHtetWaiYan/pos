@@ -33,7 +33,7 @@ class CategoryController extends Controller
             'is_show' => $request->is_show,
         ]);
 
-        return response()->json(['message' => 'Category successfully created']);
+        return response()->json(['message' => 'Category successfully created'],200);
     }
 
     public function update(Request $request)
@@ -42,7 +42,7 @@ class CategoryController extends Controller
             'name' => $request->name,
             'is_show' => $request->is_show
         ]);
-        return response()->json(['message' => 'Category successfully updated']);
+        return response()->json(['message' => 'Category successfully updated'],200);
 
     }
 
@@ -50,13 +50,13 @@ class CategoryController extends Controller
     {
         Category::find($request->id)->delete();
 
-        return response()->json(['message' => 'Category successfully deleted']);
+        return response()->json(['message' => 'Category successfully deleted'],200);
     }
 
     public function restore(Request $request)
     {
         Category::withTrashed()->find($request->id)->restore();
 
-        return response()->json(['message' => 'Category successfully restored']);
+        return response()->json(['message' => 'Category successfully restored'],200);
     }
 }

@@ -33,7 +33,7 @@ class BrandController extends Controller
             'is_show' => $request->is_show,
         ]);
 
-        return response()->json(['message' => 'Brand successfully created']);
+        return response()->json(['message' => 'Brand successfully created'],200);
     }
 
     public function update(Request $request)
@@ -42,7 +42,7 @@ class BrandController extends Controller
             'name' => $request->name,
             'is_show' => $request->is_show
         ]);
-        return response()->json(['message' => 'Brand successfully updated']);
+        return response()->json(['message' => 'Brand successfully updated'],200);
 
     }
 
@@ -50,13 +50,13 @@ class BrandController extends Controller
     {
         Brand::find($request->id)->delete();
 
-        return response()->json(['message' => 'Brand successfully deleted']);
+        return response()->json(['message' => 'Brand successfully deleted'],200);
     }
 
     public function restore(Request $request)
     {
         Brand::withTrashed()->find($request->id)->restore();
 
-        return response()->json(['message' => 'Brand successfully restored']);
+        return response()->json(['message' => 'Brand successfully restored'],200);
     }
 }
