@@ -22,4 +22,25 @@ class Product extends Model
         'photo',
         'price'
     ];
+
+    public function stocks()
+    {
+        return $this->hasMany(StockPrice::class);
+    }
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+    public function latestStockRecord()
+    {
+        return $this->hasOne(StockPrice::class, 'product_id')->latest('created_at');
+    }
 }

@@ -3,43 +3,105 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Brand;
 use App\Models\Category;
-use App\Models\Supplier;
+use App\Models\Product;
 use App\Models\StockPrice;
+use App\Models\Supplier;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
     //
-    public function getData()
+
+
+    public function index(Request $request)
     {
-        $user_id=Auth::user()->id;
-        $brands = Brand::where('user_id',$user_id)->where('is_show',1)->get();
+
+        $user_id = Auth::user()->id;
+        $brands = Brand::where('user_id', $user_id)->where('is_show', 1)->get();
         $categories = Category::where('user_id', $user_id)->get();
         $suppliers = Supplier::where('user_id', $user_id)->get();
-        return response()->json(['brands'=> $brands , 'categories' => $categories , 'suppliers' => $suppliers],200);
+        switch ($request->trashed) {
+            case "with":
+                $products = Product::with(['latestStockRecord','brand','category','supplier'])
+                    ->withTrashed()
+                    ->where('user_id', $user_id)
+                    ->where(function ($query) use ($request) {
+                        $query->where('name', 'LIKE', '%' . $request->search . '%')
+                            ->orWhere('code', 'LIKE', '%' . $request->search . '%');
+                    })
+                    ->when($request->brand, function ($query) use ($request) {
+                        $query->where('brand_id', $request->brand);
+                    })
+                    ->when($request->category, function ($query) use ($request) {
+                        $query->where('category_id', $request->category);
+                    })
+                    ->when($request->supplier, function ($query) use ($request) {
+                        $query->where('supplier_id', $request->supplier);
+                    })
+                    ->orderBy('id', 'DESC')
+                    ->paginate($request->perpage);
+                break;
+            case "only":
+                $products = Product::with(['latestStockRecord','brand','category','supplier'])
+                    ->onlyTrashed()
+                    ->where('user_id', $user_id)
+                    ->where(function ($query) use ($request) {
+                        $query->where('name', 'LIKE', '%' . $request->search . '%')
+                            ->orWhere('code', 'LIKE', '%' . $request->search . '%');
+                    })
+                    ->when($request->brand, function ($query) use ($request) {
+                        $query->where('brand_id', $request->brand);
+                    })
+                    ->when($request->category, function ($query) use ($request) {
+                        $query->where('category_id', $request->category);
+                    })
+                    ->when($request->supplier, function ($query) use ($request) {
+                        $query->where('supplier_id', $request->supplier);
+                    })
+                    ->orderBy('id', 'DESC')
+                    ->paginate($request->perpage);
+                break;
+            default:
+                $products = Product::with(['latestStockRecord','brand','category','supplier'])->where('user_id', $user_id)
+                    ->where(function ($query) use ($request) {
+                        $query->where('name', 'LIKE', '%' . $request->search . '%')
+                            ->orWhere('code', 'LIKE', '%' . $request->search . '%');
+                    })
+                    ->when($request->brand, function ($query) use ($request) {
+                        $query->where('brand_id', $request->brand);
+                    })
+                    ->when($request->category, function ($query) use ($request) {
+                        $query->where('category_id', $request->category);
+                    })
+                    ->when($request->supplier, function ($query) use ($request) {
+                        $query->where('supplier_id', $request->supplier);
+                    })
+                    ->orderBy('id', 'DESC')
+                    ->paginate($request->perpage);
+        }
+
+        return response()->json(['products' => $products, 'brands' => $brands, 'categories' => $categories, 'suppliers' => $suppliers], 200);
     }
 
     public function create(Request $request)
     {
-        if(!empty(Product::where('user_id',Auth::user()->id)->where('code', $request->code)->first())){
-            return response()->json(['codeError'=> 'Product code already exit!'],401);
+        if (!empty(Product::where('user_id', Auth::user()->id)->where('code', $request->code)->first())) {
+            return response()->json(['codeError' => 'Product code already exits!'], 401);
         }
-        if ($request->photo){
+        if ($request->hasFile('photo')) {
             $request->validate([
-                'photo' => 'mimes:jpg,jpeg,png'
+                'photo' => 'mimes:jpg,jpeg,png|max:2048'
             ]);
-            $imageName = time().'.'.$request->photo->getClientOriginalExtension();
+            $imageName = time() . '.' . $request->photo->getClientOriginalExtension();
             $request->photo->move(public_path('products'), $imageName);
-        }
-        else {
+        } else {
             $imageName = 'default.jpg';
         }
 
-        $product =Product::create([
+        $product = Product::create([
             'user_id' => $request->user_id,
             'name' => $request->name,
             'code' => $request->code,
@@ -61,6 +123,55 @@ class ProductController extends Controller
             'stock' => $request->stock,
         ]);
 
-        return response()->json(['message'=>'Product successfully created'],200);
+        return response()->json(['message' => 'Product successfully created'], 200);
+    }
+
+    public function update(Request $request)
+    {
+        $check = Product::where('id',$request->id)->first();
+        if($check->code !== $request->code){
+            if (!empty(Product::where('user_id', Auth::user()->id)->where('code', $request->code)->first())) {
+                return response()->json(['codeError' => 'Product code already exits!'], 401);
+            }
+        }
+        if ($request->hasFile('photo')) {
+            $request->validate([
+                'photo' => 'mimes:jpg,jpeg,png|max:2048'
+            ]);
+            $imageName = time() . '.' . $request->photo->getClientOriginalExtension();
+            $request->photo->move(public_path('products'), $imageName);
+
+            Product::find($request->id)->update([
+                'photo' => $imageName
+            ]);
+        }
+
+        Product::find($request->id)->update([
+            'name' => $request->name,
+            'code' => $request->code,
+            'variant' => $request->variant,
+            'description' => $request->description,
+            'brand_id' => $request->brand_id,
+            'category_id' => $request->category_id,
+            'supplier_id' => $request->supplier_id,
+            'is_show' => $request->is_show,
+        ]);
+
+        return response()->json(['message' => 'Product successfully updated'],200);
+
+    }
+
+    public function delete(Request $request)
+    {
+        Product::find($request->id)->delete();
+
+        return response()->json(['message' => 'Product successfully deleted'],200);
+    }
+
+    public function restore(Request $request)
+    {
+        Product::withTrashed()->find($request->id)->restore();
+
+        return response()->json(['message' => 'Product successfully restored'],200);
     }
 }

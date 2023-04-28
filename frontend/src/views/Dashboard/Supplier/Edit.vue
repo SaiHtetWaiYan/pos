@@ -75,7 +75,6 @@ import {
   DialogPanel,
   DialogTitle,
 } from '@headlessui/vue'
-import {useAuthStore} from "@/store/AuthStore.js";
 import axiosInstance from "@/axios.js";
 export default {
   props: {

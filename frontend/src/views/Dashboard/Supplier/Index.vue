@@ -56,8 +56,8 @@
                 <td class="whitespace-nowrap py-4 text-sm text-gray-500">{{supplier.contact}}</td>
                 <td class="relative whitespace-nowrap py-4 pr-4 text-right text-sm font-medium sm:pr-6">
                   <Edit :supplier="supplier" @passData="getData"></Edit>
-                  <RestoreModal :restore="[supplier,'supplier']" @passData="getData" v-if="supplier.deleted_at"></RestoreModal>
-                  <DeleteModal :delete="[supplier,'supplier']" @passData="getData" v-else></DeleteModal>
+                  <RestoreModal :restore="supplier" :page="'supplier'" @passData="getData" v-if="supplier.deleted_at"></RestoreModal>
+                  <DeleteModal :delete="supplier" :page="'supplier'" @passData="getData" v-else></DeleteModal>
                 </td>
               </tr>
               <tr v-if="suppliers.total === 0">

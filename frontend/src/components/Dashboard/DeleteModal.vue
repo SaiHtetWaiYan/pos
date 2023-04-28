@@ -72,6 +72,10 @@ export default {
       type: Object,
       required: true,
     },
+    page: {
+      type: String,
+      required: true,
+    },
   },
   components:{
     TransitionRoot,
@@ -85,9 +89,8 @@ export default {
     const isOpen = ref(false)
     return{
       isOpen,
-      page: this.delete[1],
-      name: this.delete[0].name,
-      id: this.delete[0].id
+      name: this.delete.name,
+      id: this.delete.id
     }
   },
   methods:{

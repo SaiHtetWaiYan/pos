@@ -59,8 +59,8 @@
                 </td>
                 <td class="relative whitespace-nowrap py-4 pr-4 text-right text-sm font-medium sm:pr-6">
                   <Edit :brand="brand" @passData="getData"></Edit>
-                  <RestoreModal :restore="[brand,'brand']" @passData="getData" v-if="brand.deleted_at"></RestoreModal>
-                  <DeleteModal :delete="[brand,'brand']" @passData="getData" v-else></DeleteModal>
+                  <RestoreModal :restore="brand" :page="'brand'" @passData="getData" v-if="brand.deleted_at"></RestoreModal>
+                  <DeleteModal :delete="brand" :page="'brand'" @passData="getData" v-else></DeleteModal>
                 </td>
               </tr>
               <tr v-if="brands.total === 0">

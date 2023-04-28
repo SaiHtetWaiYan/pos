@@ -59,8 +59,8 @@
                 </td>
                 <td class="relative whitespace-nowrap py-4 pr-4 text-right text-sm font-medium sm:pr-6">
                   <Edit :category="category" @passData="getData"></Edit>
-                  <RestoreModal :restore="[category,'category']" @passData="getData" v-if="category.deleted_at"></RestoreModal>
-                  <DeleteModal :delete="[category,'category']" @passData="getData" v-else></DeleteModal>
+                  <RestoreModal :restore="category" :page="'category'" @passData="getData" v-if="category.deleted_at"></RestoreModal>
+                  <DeleteModal :delete="category" :page="'category'" @passData="getData" v-else></DeleteModal>
                 </td>
               </tr>
               <tr v-if="categories.total === 0">

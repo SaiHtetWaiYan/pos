@@ -1,7 +1,5 @@
 <template>
-  <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-    <button type="button" @click="openModal" class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">Create</button>
-  </div>
+  <button class="text-indigo-600 hover:text-indigo-900" @click="openModal">Edit</button>
 
   <TransitionRoot appear :show="isOpen" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">
@@ -37,9 +35,9 @@
                   as="h3"
                   class="text-lg font-medium leading-6 text-gray-900"
               >
-                Create Product
+                Edit Product
               </DialogTitle>
-              <form @submit.prevent="Create" enctype="multipart/form-data">
+              <form @submit.prevent="Edit" enctype="multipart/form-data">
                 <div class="grid grid-cols-6 gap-6 mt-6" v-if="codeError || photoError">
                   <div class="col-span-6 sm:col-span-6" v-if="codeError">
                     <ul class="list-disc mt-4 ml-4">
@@ -90,34 +88,22 @@
                   <div class="col-span-6 sm:col-span-6">
                     <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
                     <textarea required
-                        class="w-full mt-1  rounded-lg border-gray-200 p-3 text-sm"
-                        rows="3"
-                        id="contact" v-model="description"
+                              class="w-full mt-1  rounded-lg border-gray-200 p-3 text-sm"
+                              rows="3"
+                              id="contact" v-model="description"
                     ></textarea>
                   </div>
                   <div class="col-span-6 sm:col-span-2">
-                    <label for="buying-price" class="block text-sm font-medium text-gray-700">Buying Price</label>
-                    <input type="number" name="buying-price" id="buying-price" required v-model="buying_price" min="0" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" />
-                  </div>
-                  <div class="col-span-6 sm:col-span-2">
-                    <label for="selling-price" class="block text-sm font-medium text-gray-700">Selling Price</label>
-                    <input type="number" name="selling-price" id="selling-price" required v-model="selling_price" min="0" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" />
-                  </div>
-                  <div class="col-span-6 sm:col-span-2">
-                    <label for="unit-in-stock" class="block text-sm font-medium text-gray-700">Unit in Stock</label>
-                    <input type="number" name="stock" id="stock" v-model="stock" required min="0" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" />
-                  </div>
-                  <div class="col-span-6 sm:col-span-2">
-                    <label for="current-password" class="block text-sm font-medium text-gray-700">Product Photo</label>
-                    <label class="relative mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <label for="product-photo" class="block text-sm font-medium text-gray-700">Product Photo</label>
+                    <label class="relative mt-1 block w-full py-5 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                   <span class="absolute inset-y-0 right-0 flex items-center pl-2 mr-2 ">
                     <svg class="w-6 h-6 " fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                       <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
                     </svg>
                   </span>
-                      <input type='file' name="photo" id="photo" class="hidden" v-on:change="onImageChange"/>
+                      <input type='file' name="photo" id="photo" class="hidden"  v-on:change="onImageChange"/>
                       <span v-if="photo">{{ photo.name }}</span>
-                      <span v-else >default.jpg</span>
+
                     </label>
                   </div>
                   <div class="col-span-6 sm:col-span-2">
@@ -166,6 +152,10 @@ export default {
       type: Array,
       required: true,
     },
+    product:{
+      type: Object,
+      required: true
+    }
   },
   emits: ['passData'],
   components:{
@@ -179,17 +169,14 @@ export default {
     const isOpen = ref(false)
     return{
       isOpen,
-      name : null,
-      code : null,
-      variant: null,
-      is_show : 1,
-      brand: null,
-      category: null,
-      supplier: null,
-      description : null,
-      buying_price : null,
-      selling_price: null,
-      stock: null,
+      name : this.product.name,
+      code : this.product.code,
+      variant: this.product.variant,
+      is_show : this.product.is_show,
+      brand: this.product.brand.id,
+      category: this.product.category.id,
+      supplier: this.product.supplier.id,
+      description : this.product.description,
       photo: null,
       codeError: ref(null),
       photoError: ref(null),
@@ -199,7 +186,6 @@ export default {
   methods:{
     closeModal() {
       this.isOpen = false
-      this.reset()
       this.errorRest()
     },
     openModal() {
@@ -208,7 +194,7 @@ export default {
     onImageChange(e){
       this.photo = e.target.files[0];
     },
-    async Create(){
+    async Edit(){
       try {
         const config = {
           headers: { 'content-type': 'multipart/form-data' }
@@ -217,8 +203,8 @@ export default {
         setTimeout(() => {
           this.isLoading = false
         }, 1000)
-        await axiosInstance.post('/api/product/create',{
-          user_id: useAuthStore().id,
+        await axiosInstance.post('/api/product/update',{
+          id: this.product.id,
           name: this.name,
           code: this.code,
           variant: this.variant,
@@ -232,9 +218,9 @@ export default {
           stock: this.stock,
           is_show: this.is_show
         },config)
-        this.reset()
         this.isOpen = false
-        this.$emit('passData' ,'Brand successfully created')
+        this.photo =null
+        this.$emit('passData' ,'Product successfully updated')
       }catch (errors)
       {
         this.errorRest()
@@ -248,21 +234,9 @@ export default {
         }
       }
     },
-    reset(){
-      this.name = null;
-      this.code = null;
-      this.variant = null;
-      this.description =null;
-      this.brand = null;
-      this.category = null;
-      this.supplier = null;
-      this.photo =null;
-      this.buying_price = null;
-      this.selling_price = null;
-      this.stock =null;
-      this.is_show = 1
-    },
     errorRest(){
+      this.code = this.product.code
+      this.photo = null
       this.photoError = null
       this.codeError = null
     }

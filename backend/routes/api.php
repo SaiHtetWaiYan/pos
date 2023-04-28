@@ -53,7 +53,10 @@ Route::middleware('auth:sanctum')->group(function() {
     });
 
     Route::prefix('product')->group(function () {
-        Route::get('get-data',[ProductController::class, 'getData']);
+        Route::post('/',[ProductController::class, 'index']);
         Route::post('create',[ProductController::class,'create']);
+        Route::post('update',[ProductController::class,'update']);
+        Route::post('delete',[ProductController::class,'delete']);
+        Route::post('restore',[ProductController::class,'restore']);
     });
 });

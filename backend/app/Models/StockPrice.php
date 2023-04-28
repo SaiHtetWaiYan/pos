@@ -15,4 +15,9 @@ class StockPrice extends Model
         'selling_price',
         'stock'
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }
