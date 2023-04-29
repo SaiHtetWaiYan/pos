@@ -112,6 +112,7 @@ class ProductController extends Controller
             'supplier_id' => $request->supplier_id,
             'price' => $request->selling_price,
             'is_show' => $request->is_show,
+            'current_stock' => $request->stock,
             'photo' => $imageName,
         ]);
 
@@ -134,6 +135,14 @@ class ProductController extends Controller
                 return response()->json(['codeError' => 'Product code already exits!'], 401);
             }
         }
+        if($check->current_stock != $request->stock){
+
+            $request->validate([
+                'reason' => 'required|string|max:255',
+            ]);
+
+
+        }
         if ($request->hasFile('photo')) {
             $request->validate([
                 'photo' => 'mimes:jpg,jpeg,png|max:2048'
@@ -155,10 +164,47 @@ class ProductController extends Controller
             'category_id' => $request->category_id,
             'supplier_id' => $request->supplier_id,
             'is_show' => $request->is_show,
+            'price' => $request->selling_price,
+            'current_stock' => $request->stock,
         ]);
+
+        $diff = $request->stock - $check->current_stock ;
+        $StockPrice = StockPrice::find($request->last_stock_id)->first();
+        $newstock = $StockPrice->stock + $diff;
+        $StockPrice->update([
+            'buying_price' => $request->buying_price,
+            'selling_price' => $request->selling_price,
+            'reason' => $request->reason,
+            'stock' => $newstock,
+        ]);
+
 
         return response()->json(['message' => 'Product successfully updated'],200);
 
+    }
+
+    public function stock(Request $request)
+    {
+        $stocks = StockPrice::orderBy('id', 'DESC')->where('product_id',$request->product_id)->paginate(10);
+
+        return response()->json(['stocks'=> $stocks] ,200);
+    }
+
+    public function addstock(Request $request)
+    {
+        Product::find($request->product_id)->update([
+            'price' => $request->selling_price,
+            'current_stock' => $request->current_stock,
+        ]);
+
+        StockPrice::create([
+            'product_id' => $request->product_id,
+            'buying_price' => $request->buying_price,
+            'selling_price' => $request->selling_price,
+            'stock' => $request->stock,
+        ]);
+
+        return response()->json(['message' => 'Product Stock successfully added'],200);
     }
 
     public function delete(Request $request)

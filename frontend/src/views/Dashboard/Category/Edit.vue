@@ -1,6 +1,6 @@
 <template>
 
-  <button @click="openModal" class="text-indigo-600 hover:text-indigo-900">Edit</button>
+  <button @click="openModal" class="text-indigo-400 hover:text-indigo-700">Edit</button>
 
   <TransitionRoot appear :show="isOpen" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">

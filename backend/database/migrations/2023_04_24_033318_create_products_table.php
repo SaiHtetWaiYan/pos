@@ -24,6 +24,7 @@ return new class extends Migration
             $table->boolean('is_show');
             $table->string('photo')->nullable();
             $table->integer('price');
+            $table->integer('current_stock');
             $table->softDeletes();
             $table->timestamps();
         });

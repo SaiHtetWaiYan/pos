@@ -1,5 +1,5 @@
 <template>
-  <button class="text-indigo-600 hover:text-indigo-900" @click="openModal">Edit</button>
+  <button class="text-indigo-400 hover:text-indigo-700" @click="openModal">Edit</button>
 
   <TransitionRoot appear :show="isOpen" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">
@@ -38,7 +38,7 @@
                 Edit Product
               </DialogTitle>
               <form @submit.prevent="Edit" enctype="multipart/form-data">
-                <div class="grid grid-cols-6 gap-6 mt-6" v-if="codeError || photoError">
+                <div class="grid grid-cols-6 gap-6 mt-6" v-if="codeError || photoError || reasonError">
                   <div class="col-span-6 sm:col-span-6" v-if="codeError">
                     <ul class="list-disc mt-4 ml-4">
                       <li class="text-sm font-medium text-red-600">{{codeError}}</li>
@@ -47,6 +47,11 @@
                   <div class="col-span-6 sm:col-span-6" v-if="photoError">
                     <ul class="list-disc mt-4 ml-4">
                       <li class="text-sm font-medium text-red-600">{{photoError}}</li>
+                    </ul>
+                  </div>
+                  <div class="col-span-6 sm:col-span-6" v-if="reasonError">
+                    <ul class="list-disc mt-4 ml-4">
+                      <li class="text-sm font-medium text-red-600">{{reasonError}}</li>
                     </ul>
                   </div>
                 </div>
@@ -92,6 +97,22 @@
                               rows="3"
                               id="contact" v-model="description"
                     ></textarea>
+                  </div>
+                  <div class="col-span-6 sm:col-span-2">
+                    <label for="buying-price" class="block text-sm font-medium text-gray-700">Buying Price</label>
+                    <input type="number" name="buying-price" id="buying-price" required   v-model="buying_price" min="0" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" />
+                  </div>
+                  <div class="col-span-6 sm:col-span-2">
+                    <label for="selling-price" class="block text-sm font-medium text-gray-700">Selling Price</label>
+                    <input type="number" name="selling-price" id="selling-price" required v-model="selling_price" min="0" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" />
+                  </div>
+                  <div class="col-span-6 sm:col-span-2">
+                    <label for="unit-in-stock" class="block text-sm font-medium text-gray-700">Unit in Stock</label>
+                    <input type="number" name="stock" id="stock" v-model="stock" required  min="0" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" />
+                  </div>
+                  <div class="col-span-6 sm:col-span-6">
+                    <label for="reason" class="block text-sm font-medium text-gray-700">Reason Why Update Stock ?<span class="text-red-500"> ( Required if u update unit in stock )</span></label>
+                    <input type="text" name="reason" id="reason" v-model="reason"  class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" />
                   </div>
                   <div class="col-span-6 sm:col-span-2">
                     <label for="product-photo" class="block text-sm font-medium text-gray-700">Product Photo</label>
@@ -173,15 +194,27 @@ export default {
       code : this.product.code,
       variant: this.product.variant,
       is_show : this.product.is_show,
-      brand: this.product.brand.id,
-      category: this.product.category.id,
-      supplier: this.product.supplier.id,
+      brand: this.product.brand ? this.product.brand.id :null,
+      category: this.product.category ? this.product.category.id :null ,
+      supplier: this.product.supplier ? this.product.supplier.id :null,
       description : this.product.description,
+      buying_price : ref(this.product.latest_stock_record.buying_price),
+      selling_price: ref(this.product.latest_stock_record.selling_price),
+      stock: ref(this.product.current_stock),
       photo: null,
+      reason: null,
       codeError: ref(null),
       photoError: ref(null),
+      reasonError: ref(null),
       isLoading: null
     }
+  },
+  watch:{
+    product(after,before){
+      this.buying_price = this.product.latest_stock_record.buying_price
+      this.selling_price = this.product.latest_stock_record.selling_price
+      this.stock = this.product.current_stock
+    },
   },
   methods:{
     closeModal() {
@@ -216,15 +249,21 @@ export default {
           buying_price: this.buying_price,
           selling_price: this.selling_price,
           stock: this.stock,
-          is_show: this.is_show
+          reason: this.reason,
+          is_show: this.is_show,
+          last_stock_id : this.product.latest_stock_record.id
         },config)
         this.isOpen = false
         this.photo =null
+        this.reason = null
         this.$emit('passData' ,'Product successfully updated')
       }catch (errors)
       {
         this.errorRest()
         if(errors.response.data.errors){
+          if (errors.response.data.errors.reason){
+            this.reasonError = errors.response.data.errors.reason[0]
+          }
           if (errors.response.data.errors.photo){
             this.photoError = errors.response.data.errors.photo[0]
           }
@@ -236,9 +275,11 @@ export default {
     },
     errorRest(){
       this.code = this.product.code
+      this.stock = this.product.current_stock
       this.photo = null
       this.photoError = null
       this.codeError = null
+      this.reasonError = null
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <button @click="openModal" class="text-yellow-600 hover:text-yellow-900 ml-2">Restore</button>
+  <button @click="openModal" class="text-yellow-400 hover:text-yellow-700 ml-2">Restore</button>
   <TransitionRoot appear :show="isOpen" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">
       <TransitionChild

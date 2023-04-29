@@ -59,12 +59,12 @@
               <thead class="bg-gray-50">
               <tr>
                 <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"></th>
-                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Name</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Product Code</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Name</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Variant</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Price</th>
                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Stock</th>
-                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                <th scope="col" class="relative py-3.5  pr-4 sm:pr-6">
                   <span class="sr-only">Edit</span>
                 </th>
               </tr>
@@ -72,6 +72,7 @@
               <tbody class="bg-white">
               <tr v-for="(product, productIdx) in products.data" :key="product.id" :class="productIdx % 2 === 0 ? undefined : 'bg-gray-50'">
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">{{ (productIdx+ 1 + products.current_page * products.per_page) - products.per_page   }}</td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ product.code }}</td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                 <div class="flex items-center">
                   <div class="h-20 w-20 flex-shrink-0">
@@ -83,11 +84,12 @@
                   </div>
                 </div>
                 </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ product.code }}</td>
+
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ product.variant }}</td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ product.price }}</td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ product.latest_stock_record.stock }}</td>
-                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ product.current_stock }}</td>
+                <td class="relative whitespace-nowrap py-4  pr-4 text-right text-sm font-medium sm:pr-6">
+                  <AddStock :product="product" @passData="getData"></AddStock>
                   <Detail :product="product"></Detail>
                   <Edit @passData="getData" :brands="brands" :categories="categories" :suppliers="suppliers" :product="product"></Edit>
                   <RestoreModal :restore="product" :page="'product'" @passData="getData" v-if="product.deleted_at"></RestoreModal>
@@ -129,13 +131,16 @@ import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 import Create from "@/views/Dashboard/Product/Create.vue";
 import Detail from "@/views/Dashboard/Product/Detail.vue";
 import Edit from "@/views/Dashboard/Product/Edit.vue";
+import AddStock from "@/views/Dashboard/Product/AddStock.vue";
 import DeleteModal from "@/components/Dashboard/DeleteModal.vue";
 import RestoreModal from "@/components/Dashboard/RestoreModal.vue";
+
 export default {
   components:{
     Create,
     Detail,
     Edit,
+    AddStock,
     DeleteModal,
     RestoreModal,
     VPagination

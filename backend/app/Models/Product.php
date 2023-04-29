@@ -20,7 +20,8 @@ class Product extends Model
         'description',
         'is_show',
         'photo',
-        'price'
+        'price',
+        'current_stock'
     ];
 
     public function stocks()

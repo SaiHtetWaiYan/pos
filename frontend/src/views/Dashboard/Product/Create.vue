@@ -234,7 +234,7 @@ export default {
         },config)
         this.reset()
         this.isOpen = false
-        this.$emit('passData' ,'Brand successfully created')
+        this.$emit('passData' ,'Product successfully created')
       }catch (errors)
       {
         this.errorRest()

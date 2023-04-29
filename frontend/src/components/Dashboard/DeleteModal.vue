@@ -1,5 +1,5 @@
 <template>
-  <button @click="openModal" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
+  <button @click="openModal" class="text-red-400 hover:text-red-700 ml-2">Delete</button>
   <TransitionRoot appear :show="isOpen" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">
       <TransitionChild

@@ -13,7 +13,8 @@ class StockPrice extends Model
         'product_id',
         'buying_price',
         'selling_price',
-        'stock'
+        'stock',
+        'reason'
     ];
 
     public function product()
