@@ -73,6 +73,7 @@
               <PopoverButton class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   <span class="sr-only">View notifications</span>
                   <BellIcon class="h-6 w-6" aria-hidden="true" />
+                <span class="absolute -top-2 -right-1 h-4 w-4 rounded-full bg-red-600 text-white flex justify-center items-center items" v-if="useAuthStore().notification === 0"><span>1</span></span>
               </PopoverButton>
               <transition
                   enter-active-class="transition duration-200 ease-out"
@@ -82,11 +83,18 @@
                   leave-from-class="translate-y-0 opacity-100"
                   leave-to-class="translate-y-1 opacity-0"
               >
-              <PopoverPanel class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                <div class="mx-4 my-2 flex items-center">
-                  <ExclamationTriangleIcon class="h-6 w-6 text-yellow-600" aria-hidden="true"/>
+              <PopoverPanel class="origin-top-right absolute right-0 mt-2 w-72 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div class="mx-4 my-2 flex items-center" v-if="useAuthStore().notification === 0">
+                  <ExclamationTriangleIcon class="h-10 w-10 text-red-600" aria-hidden="true"/>
                   <div class="ml-2">
-                  <p class="text-inline text-sm text-gray-500">There's no announcement yet !</p>
+                  <p class="text-inline text-sm text-gray-500">Please provide your information in profile tab for purpose order invoice print!</p>
+                  </div>
+                </div>
+                <div class="mx-4 my-2 flex items-center" v-else>
+                  <ExclamationTriangleIcon class="h-6 w-6 text-yellow-600" aria-hidden="true"/>
+
+                  <div class="ml-2">
+                    <p class="text-inline text-sm text-gray-500">There's no announcement yet !</p>
                   </div>
                 </div>
               </PopoverPanel>
@@ -157,7 +165,8 @@ import {
   Square3Stack3DIcon,
   CubeIcon,
   ExclamationTriangleIcon,
-  TruckIcon
+  TruckIcon,
+  ShoppingCartIcon
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
@@ -166,6 +175,7 @@ const navigation = [
   { name: 'Category', href: '/app/category', icon: Square3Stack3DIcon },
   { name: 'Supplier', href: '/app/supplier', icon: TruckIcon },
   { name: 'Product', href: '/app/product', icon: CubeIcon },
+  { name: 'Order', href: '/app/order', icon: ShoppingCartIcon },
 ]
 const imgUrl = import.meta.env.VITE_API_BASE_URL+'/users/'
 export default {
@@ -184,7 +194,8 @@ export default {
     Popover,
     PopoverButton,
     PopoverPanel,
-    ExclamationTriangleIcon
+    ExclamationTriangleIcon,
+    ShoppingCartIcon
   },
   setup() {
     const sidebarOpen = ref(false)

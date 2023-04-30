@@ -15,7 +15,8 @@ export const useAuthStore = defineStore({
         city: null,
         state: null,
         country: null,
-        remember: null
+        remember: null,
+        notification : 0
     }),
     getters: {
         isAuthenticated: (state) => !!state.token,
@@ -40,6 +41,7 @@ export const useAuthStore = defineStore({
             this.city = response.data.userInfo.city
             this.state = response.data.userInfo.state
             this.country = response.data.userInfo.country
+            this.notification = 1
         },
         destoryUser(){
             this.token = null

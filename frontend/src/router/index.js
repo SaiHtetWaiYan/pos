@@ -50,6 +50,16 @@ const routes= [
                 name: 'app.product',
                 component: () => import('@/views/Dashboard/Product/Index.vue'),
             },
+            {
+                path: 'order',
+                name: 'app.order',
+                component: () => import('@/views/Dashboard/Order/Index.vue'),
+            },
+            {
+                path: 'summary',
+                name: 'app.summary',
+                component: () => import('@/views/Dashboard/Order/Summary.vue'),
+            },
 
 
         ]
