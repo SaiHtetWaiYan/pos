@@ -86,7 +86,7 @@
                 </td>
 
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ product.variant }}</td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ product.price }}</td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ product.price }} Ks</td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ product.current_stock }}</td>
                 <td class="relative whitespace-nowrap py-4  pr-4 text-right text-sm font-medium sm:pr-6">
                   <AddStock :product="product" @passData="getData"></AddStock>

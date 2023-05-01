@@ -1,146 +1,266 @@
-
 <template>
-  <div class="bg-white">
-    <div class="max-w-4xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
-      <h1 class="text-3xl font-extrabold tracking-tight text-gray-900">Order Summary</h1>
+  <div class="mt-10">
+    <button type="button" @click="openModal" class="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500">Checkout</button>
+  </div>
 
-      <form class="mt-12">
-        <div>
-          <h2 class="sr-only">Items in your shopping cart</h2>
+  <TransitionRoot appear :show="isOpen" as="template">
+    <Dialog as="div" @close="closeModal" class="relative z-10">
+      <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 bg-black bg-opacity-25" />
+      </TransitionChild>
 
-          <ul role="list" class="border-t border-b border-gray-200 divide-y divide-gray-200">
-            <li v-for="(product, productIdx) in products" :key="product.id" class="flex py-6 sm:py-10">
-              <div class="flex-shrink-0">
-                <img :src="product.imageSrc" :alt="product.imageAlt" class="w-24 h-24 rounded-lg object-center object-cover sm:w-32 sm:h-32" />
-              </div>
+      <div class="fixed inset-0 overflow-y-auto">
+        <div
+            class="flex min-h-full items-center justify-center p-4 text-center"
+        >
+          <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+          >
+            <DialogPanel
+                class="w-full max-w-5xl transform overflow-hidden rounded-2xl bg-white p-8 text-left align-middle shadow-xl transition-all"
+            >
+              <DialogTitle
+                  as="h3"
+                  class="text-lg font-medium leading-6 text-gray-900"
+              >
+                Order Summary
+                <div class="absolute top-0 right-0 mt-6 mr-6">
+                  <button type="button" class="-m-2 p-2 inline-flex text-gray-600 hover:text-gray-700"  @click="closeModal">
+                    <span class="sr-only">Remove</span>
+                    <XMarkIcon class="h-6 w-6" aria-hidden="true" />
+                  </button>
+                </div>
+              </DialogTitle>
+              <div class="mt-12 lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start xl:gap-x-16">
+                <section aria-labelledby="cart-heading" class="lg:col-span-7">
+                  <h2 id="cart-heading" class="sr-only">Items in your shopping cart</h2>
 
-              <div class="relative ml-4 flex-1 flex flex-col justify-between sm:ml-6">
-                <div>
-                  <div class="flex justify-between sm:grid sm:grid-cols-2">
-                    <div class="pr-6">
-                      <h3 class="text-sm">
-                        <a :href="product.href" class="font-medium text-gray-700 hover:text-gray-800">
-                          {{ product.name }}
-                        </a>
-                      </h3>
-                      <p class="mt-1 text-sm text-gray-500">
-                        {{ product.color }}
-                      </p>
-                      <p v-if="product.size" class="mt-1 text-sm text-gray-500">
-                        {{ product.size }}
-                      </p>
+                  <ul role="list" class="border-t border-b border-gray-200 divide-y divide-gray-200">
+                    <li v-for="(product, productIdx) in products" :key="product.id" class="flex py-6 sm:py-10">
+                      <div class="flex-shrink-0">
+                        <img :src="imgUrl+product.photo"  class="w-24 h-24 rounded-md object-center object-cover sm:w-48 sm:h-48" />
+                      </div>
+
+                      <div class="ml-4 flex-1 flex flex-col justify-between sm:ml-6">
+                        <div class="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
+                          <div>
+                            <div class="flex justify-between">
+                              <h3 class="text-sm">
+                                <a href="#" class="font-medium text-gray-700 hover:text-gray-800">
+                                  {{ product.name }}
+                                </a>
+                              </h3>
+                            </div>
+                            <div class="mt-1 flex text-sm">
+                              <p class="text-gray-500">
+                                {{ product.variant }}
+                              </p>
+
+                            </div>
+                            <p class="mt-1 text-sm font-medium text-gray-900">{{ product.price }} Ks</p>
+                          </div>
+                            <p class="max-w-full text-base leading-5 font-medium text-gray-700 text-left shadow-sm sm:text-sm">{{product.quantity}}</p>
+                        </div>
+
+                      </div>
+                    </li>
+                  </ul>
+                </section>
+
+                <!-- Order summary -->
+                <section aria-labelledby="summary-heading" class="mt-16 bg-gray-50 rounded-lg px-4 py-6 sm:p-6 lg:p-8 lg:mt-0 lg:col-span-5">
+
+
+                  <dl class="mt-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                      <dt class="text-sm text-gray-600">Subtotal</dt>
+                      <dd class="text-sm font-medium text-gray-900">{{ subtotal }} Ks</dd>
+                    </div>
+                    <div class="border-t border-gray-200 pt-4 flex items-center justify-between" v-if="discount !== 0">
+                      <dt class="text-sm text-gray-600">discount</dt>
+                      <dd class="text-sm font-medium text-gray-900">{{ discount }} Ks</dd>
                     </div>
 
-                    <p class="text-sm font-medium text-gray-900 text-right">{{ product.price }}</p>
+                    <div class="border-t border-gray-200 pt-4 flex items-center justify-between">
+                      <dt class="text-sm text-gray-600">Payment Type</dt>
+                      <dd class="text-sm font-medium text-gray-900">{{payment}}</dd>
+                    </div>
+                    <div class="border-t border-gray-200 pt-4 flex items-center justify-between">
+                      <dt class="text-base font-medium text-gray-900">Order total</dt>
+                      <dd class="text-base font-medium text-gray-900">{{total}} Ks</dd>
+                    </div>
+                  </dl>
+
+                  <div class="mt-6">
+                    <button class="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500" @click="print">Confirm & Print</button>
                   </div>
-
-                  <div class="mt-4 flex items-center sm:block sm:absolute sm:top-0 sm:left-1/2 sm:mt-0">
-                    <label :for="`quantity-${productIdx}`" class="sr-only">Quantity, {{ product.name }}</label>
-                    <select :id="`quantity-${productIdx}`" :name="`quantity-${productIdx}`" class="block max-w-full rounded-md border border-gray-300 py-1.5 text-base leading-5 font-medium text-gray-700 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
-                      <option value="7">7</option>
-                      <option value="8">8</option>
-                    </select>
-
-                    <button type="button" class="ml-4 text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:ml-0 sm:mt-3">
-                      <span>Remove</span>
-                    </button>
-                  </div>
-                </div>
-
-                <p class="mt-4 flex text-sm text-gray-700 space-x-2">
-                  <CheckIcon v-if="product.inStock" class="flex-shrink-0 h-5 w-5 text-green-500" aria-hidden="true" />
-                  <ClockIcon v-else class="flex-shrink-0 h-5 w-5 text-gray-300" aria-hidden="true" />
-                  <span>{{ product.inStock ? 'In stock' : `Ships in ${product.leadTime}` }}</span>
-                </p>
+                </section>
               </div>
-            </li>
-          </ul>
+            </DialogPanel>
+          </TransitionChild>
+        </div>
+      </div>
+    </Dialog>
+  </TransitionRoot>
+
+  <div id="printMe" hidden>
+
+
+    <div class="container">
+      <!-- Invoice header -->
+      <div class="row">
+        <div class="col-md-12 mt-5 text-center">
+          <h5>{{useAuthStore().shop_name  }}</h5>
+          <p>{{useAuthStore().street_address}} , {{useAuthStore().city}} , {{useAuthStore().state}}</p>
+          <p>{{useAuthStore().phone_number}}</p>
         </div>
 
-        <!-- Order summary -->
-        <div class="mt-10 sm:ml-32 sm:pl-6">
-          <div class="bg-gray-50 rounded-lg px-4 py-6 sm:p-6 lg:p-8">
-            <h2 class="sr-only">Order summary</h2>
+      </div>
 
-            <div class="flow-root">
-              <dl class="-my-4 text-sm divide-y divide-gray-200">
-                <div class="py-4 flex items-center justify-between">
-                  <dt class="text-gray-600">Subtotal</dt>
-                  <dd class="font-medium text-gray-900">$99.00</dd>
-                </div>
-                <div class="py-4 flex items-center justify-between">
-                  <dt class="text-gray-600">Shipping</dt>
-                  <dd class="font-medium text-gray-900">$5.00</dd>
-                </div>
-                <div class="py-4 flex items-center justify-between">
-                  <dt class="text-gray-600">Tax</dt>
-                  <dd class="font-medium text-gray-900">$8.32</dd>
-                </div>
-                <div class="py-4 flex items-center justify-between">
-                  <dt class="text-base font-medium text-gray-900">Order total</dt>
-                  <dd class="text-base font-medium text-gray-900">$112.32</dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-          <div class="mt-10">
-            <button type="submit" class="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500">Checkout</button>
-          </div>
+      <!-- Customer information -->
+      <div class="row mt-5">
+        <div class="col-md-6">
+          <p>Date: {{`${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`}} {{`${new Date().getHours()}:${new Date().getMinutes()}`}}</p>
 
-          <div class="mt-6 text-sm text-center text-gray-500">
-            <p>
-              or <a href="#" class="text-indigo-600 font-medium hover:text-indigo-500">Continue Shopping<span aria-hidden="true"> &rarr;</span></a>
-            </p>
-          </div>
         </div>
-      </form>
+        <div class="col-md-6 text-right">
+          <p>Invoice #: 12345</p>
+        </div>
+      </div>
+
+      <!-- Invoice items -->
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <table class="table ">
+            <thead>
+            <tr>
+              <th></th>
+              <th>Item</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th class="text-right">SubTotal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(product ,index) in products" :key="index">
+              <td>{{index +1}}</td>
+              <td>{{ product.name }}</td>
+              <td>{{ product.quantity }}</td>
+              <td>{{ product.price }} Ks</td>
+              <td class="text-right">{{ product.quantity * product.price }} Ks</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Invoice totals -->
+      <div class="row mt-5">
+        <div class="col-md-12 text-right">
+          <p>Subtotal: {{ subtotal }} Ks</p>
+        </div>
+        <div class="col-md-12 text-right" v-if="discount">
+          <p>Discount: {{ discount }} Ks</p>
+        </div>
+        <div class="col-md-12 text-right">
+          <p>Payment Type: {{ payment }}</p>
+        </div>
+        <div class="col-md-12 text-right">
+          <p>Total: {{ total }} Ks</p>
+        </div>
+      </div>
+
+      <!-- Invoice footer -->
+      <div class="row mt-5">
+        <div class="col-md-12 text-center">
+          <p>Thank you for your business!</p>
+          <h6>Powered By Online POS</h6>
+        </div>
+      </div>
     </div>
+
+
   </div>
+
 </template>
 
 <script>
-import { CheckIcon, ClockIcon } from '@heroicons/vue/20/solid'
-
-const products = [
-  {
-    id: 1,
-    name: 'Nomad Tumbler',
-    href: '#',
-    price: '$35.00',
-    color: 'White',
-    inStock: true,
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-03.jpg',
-    imageAlt: 'Insulated bottle with white base and black snap lid.',
-  },
-  {
-    id: 2,
-    name: 'Basic Tee',
-    href: '#',
-    price: '$32.00',
-    color: 'Sienna',
-    inStock: true,
-    size: 'Large',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-01.jpg',
-    imageAlt: "Front of men's Basic Tee in sienna.",
-  },
-  // More products...
-]
+import {ref} from "vue";
+import {Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot,} from '@headlessui/vue'
+import {CheckIcon, ClockIcon, QuestionMarkCircleIcon, XMarkIcon} from '@heroicons/vue/20/solid'
+import {useCartStore} from "@/store/CartStore.js";
+import {useAuthStore} from "@/store/AuthStore.js";
 
 export default {
-  components: {
-    CheckIcon,
-    ClockIcon,
-  },
-  setup() {
-    return {
-      products,
+  props: {
+    subtotal: {
+      type: Number,
+      required: true,
+    },
+    discount: {
+      type: Number,
+      required: true,
+    },
+    total: {
+      type: Number,
+      required: true
+    },
+    payment:{
+      type: String,
+      required: true
     }
   },
+  components:{
+    TransitionRoot,
+    TransitionChild,
+    Dialog,
+    DialogPanel,
+    DialogTitle,
+    CheckIcon,
+    ClockIcon,
+    QuestionMarkCircleIcon,
+    XMarkIcon
+  },
+  data(){
+    const isOpen = ref(false)
+    const products = useCartStore().products
+    return{
+      useAuthStore,
+      isOpen,
+      products,
+      imgUrl : import.meta.env.VITE_API_BASE_URL+'/products/',
+    }
+  },
+  methods:{
+    closeModal() {
+      this.isOpen = false
+    },
+    openModal() {
+      this.isOpen= true
+    },
+    print() {
+      this.$htmlToPaper('printMe')
+    }
+
+  }
+
 }
 </script>
+
+<style scoped>
+
+</style>

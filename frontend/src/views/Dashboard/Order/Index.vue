@@ -39,8 +39,8 @@
                 <img :src="imgUrl+product.photo"  class="h-48 w-48 object-cover object-center group-hover:opacity-75">
               </div>
               <h3 class="mt-4 text-sm text-gray-700">{{product.name}}</h3>
-              <p class="mt-1 text-lg font-medium text-gray-900">{{product.price}} Kyats</p>
-              <button @click="addToCart({ id: product.id, name: product.name,photo: product.photo, price: product.price,variant: product.variant, quantity: 1 , stock: product.current_stock})">Add to cart</button>
+              <p class="mt-1 text-lg font-medium text-gray-900">{{product.price}} Ks</p>
+              <button type="button" @click="addToCart({ id: product.id, name: product.name,photo: product.photo, price: product.price,variant: product.variant, quantity: 1 , stock: product.current_stock})" class="text-yellow-400">Add to cart</button>
             </a>
 
 
@@ -71,7 +71,7 @@
                       </a>
                     </h4>
                     <p class="ml-4 text-sm font-medium text-gray-500">{{ cart.quantity }} / {{cart.stock}}</p>
-                    <p class="ml-4 text-sm font-medium text-gray-900">{{ cart.price }} Kyats</p>
+                    <p class="ml-4 text-sm font-medium text-gray-900">{{ cart.price }} Ks</p>
                   </div>
                   <p class="mt-1 text-sm text-gray-500">
                     {{ cart.variant}}
@@ -102,23 +102,34 @@
             <dl class="space-y-4">
               <div class="flex items-center justify-between">
                 <dt class="text-base font-medium text-gray-900">Subtotal</dt>
-                <dd class="ml-4 text-base font-medium text-gray-900">{{subtotalAmount}} Kyats</dd>
+                <dd class="ml-4 text-base font-medium text-gray-900">{{subtotalAmount}} Ks</dd>
+              </div>
+              <div class="flex items-center justify-between">
+                <dt class="text-base font-medium text-gray-900">Payment Type</dt>
+                <dd class="ml-4 text-base font-medium text-gray-900">
+                  <select v-model="payment_type" class="max-w-full rounded-md border border-gray-300 py-1.5 text-base leading-5 font-medium text-gray-700 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <option value="Cash">Cash</option>
+                    <option value="MPU">MPU</option>
+                    <option value="Kpay">Kpay</option>
+                    <option value="AYAPay">AYAPay</option>
+                    <option value="Wave">Wave</option>
+
+                  </select>
+                </dd>
               </div>
               <div class="flex items-center justify-between">
                 <dt class="text-base font-medium text-gray-900">Discount</dt>
-                <dd><input type="number" v-model="discount" class="ml-4 text-base font-medium text-gray-900 focus:ring-indigo-500 focus:border-indigo-500  shadow-sm border-gray-300 rounded-md text-right" /> <span class="text-base font-medium text-gray-900">Kyats</span></dd>
+                <dd><input type="number" min="0" v-model="discount" class="ml-4 text-base font-medium text-gray-900 focus:ring-indigo-500 focus:border-indigo-500  shadow-sm border-gray-100 rounded-md text-right" /> <span class="text-base font-medium text-gray-900">Ks</span></dd>
               </div>
               <div class="flex items-center justify-between">
                 <dt class="text-base font-medium text-gray-900">Total</dt>
-                <dd class="ml-4 text-base font-medium text-gray-900">{{total}} Kyats</dd>
+                <dd class="ml-4 text-base font-medium text-gray-900">{{total}} Ks</dd>
               </div>
             </dl>
           </div>
+<!--          <a href="#" onclick="window.open('', '_blank', 'width=600,height=600'); return false;">Print</a>-->
 
-          <div class="mt-10">
-            <button type="submit" @click="checkOut" class="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500">Checkout</button>
-          </div>
-
+          <Summary :subtotal="subtotalAmount" :discount="discount" :total="total" :payment="payment_type" ></Summary>
         </section>
       </div>
     </div>
@@ -131,11 +142,12 @@ import {ref} from "vue";
 import { CheckIcon, ClockIcon } from '@heroicons/vue/20/solid'
 import axiosInstance from "@/axios.js";
 import { useCartStore } from '@/store/CartStore.js';
-import router from "@/router/index.js";
+import Summary from "@/views/Dashboard/Order/Summary.vue";
 export default {
   components: {
     CheckIcon,
     ClockIcon,
+    Summary
   },
   data() {
     let products = ref([])
@@ -143,7 +155,6 @@ export default {
     let categories = ref([])
     let suppliers = ref([])
     const carts = useCartStore().products
-
     return {
       products,
       brands,
@@ -155,7 +166,11 @@ export default {
       category: null,
       supplier: null,
       imgUrl : import.meta.env.VITE_API_BASE_URL+'/products/',
-      discount: 0
+      discount: 0,
+      payment_type : 'Cash',
+      paid: null,
+      change: null,
+      paidError: null
     }
   },
   watch:{
@@ -170,7 +185,8 @@ export default {
     },
     supplier(after,before){
       this.fetchdata()
-    }
+    },
+
   },
   mounted() {
     this.fetchdata();
@@ -182,6 +198,7 @@ export default {
         subtotal += item.price * item.quantity;
       });
       return subtotal;
+
     },
     total() {
       return this.subtotalAmount - this.discount;
@@ -208,10 +225,11 @@ export default {
     removeItem(index){
       useCartStore().removeItem(index)
     },
-    checkOut(){
-      useCartStore().checkOut(this.subtotalAmount, this.discount , this.total)
-      router.push('/app/summary')
-    }
+    // checkOut(){
+    //   if(!this.paid){
+    //     this.paidError = 'Paid is required'
+    //   }
+    // }
   }
 }
 </script>

@@ -55,11 +55,6 @@ const routes= [
                 name: 'app.order',
                 component: () => import('@/views/Dashboard/Order/Index.vue'),
             },
-            {
-                path: 'summary',
-                name: 'app.summary',
-                component: () => import('@/views/Dashboard/Order/Summary.vue'),
-            },
 
 
         ]

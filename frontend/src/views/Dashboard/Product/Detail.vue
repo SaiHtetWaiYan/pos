@@ -73,7 +73,7 @@
                       </table>
 
                       <div class="flex mt-6 border-gray-200 mb-5 border-t-2">
-                        <span class="title-font mt-6 font-medium text-2xl text-gray-900">{{ product.price }} Kyats</span>
+                        <span class="title-font mt-6 font-medium text-2xl text-gray-900">{{ product.price }} Ks</span>
 
                       </div>
                     </div>
@@ -121,8 +121,8 @@
                           <tbody class="divide-y divide-gray-200">
                           <tr v-for="(stock, stockIdx) in stocks.data" :key="stock.id">
                             <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ (stockIdx+ 1 + stocks.current_page * stocks.per_page) - stocks.per_page   }}</td>
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ stock.buying_price }}</td>
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ stock.selling_price }}</td>
+                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ stock.buying_price }} Ks</td>
+                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ stock.selling_price }} Ks</td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ stock.stock }}</td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ stock.reason }}</td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ stock.created_at.substr(11, 8) }}  {{new Date(stock.created_at).toLocaleDateString()}}</td>
