@@ -23,6 +23,15 @@
         </select>
       </div>
       <div class="col-span-6 sm:col-span-2">
+        <label for="discount" class="block text-sm font-medium text-gray-700">Discount</label>
+        <select id="discount" name="discount" v-model="discount" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          <option :value="null" />
+          <option value="discount">Discount Only</option>
+          <option value="no discount">No Discount Only</option>
+
+        </select>
+      </div>
+      <div class="col-span-6 sm:col-span-2">
         <label for="payment" class="block text-sm font-medium text-gray-700">Payment Type</label>
         <select id="payment" name="payment" v-model="payment" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
           <option :value="null" />
@@ -50,6 +59,7 @@
                 <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"></th>
                 <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Invoice Number</th>
                 <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Payment Type</th>
+                <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Discount</th>
                 <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Total</th>
                 <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Date & Time</th>
                 <th scope="col" class="relative py-3.5  pr-4 sm:pr-6">
@@ -62,14 +72,16 @@
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6">{{ (orderIdx+ 1 + orders.current_page * orders.per_page) - orders.per_page   }}</td>
                 <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ order.invoice_no }}</td>
                 <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ order.payment_type }}</td>
-                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ order.total }}</td>
+                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500" v-if="order.discount !== 0">{{ order.discount }} Ks</td>
+                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500" v-else>No</td>
+                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ order.total }} Ks</td>
                 <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ order.created_at.substr(11, 8) }}  {{new Date(order.created_at).toLocaleDateString()}}</td>
                 <td class="relative whitespace-nowrap py-4 pr-4 text-right text-sm font-medium sm:pr-6">
                   <Detail :order="order"></Detail>
                 </td>
               </tr>
               <tr v-if="orders.total === 0">
-                <td class="px-6 py-4 whitespace-nowrap border-b border-gray-200 text-center" colspan="5">No order history found.</td>
+                <td class="px-6 py-4 whitespace-nowrap border-b border-gray-200 text-center" colspan="7">No order history found.</td>
               </tr>
               </tbody>
             </table>
@@ -114,7 +126,8 @@ export default {
       search : null,
       per_page : ref('10'),
       payment: null,
-      date : null
+      date : null,
+      discount: null
     }
 
   },
@@ -133,6 +146,9 @@ export default {
     },
     date(after,before){
       this.fetchdata()
+    },
+    discount(after,before){
+      this.fetchdata()
     }
 
 
@@ -143,7 +159,8 @@ export default {
         search : this.search,
         perpage : this.per_page,
         payment : this.payment,
-        date : this.date
+        date : this.date,
+        discount : this.discount
       })
       this.orders = response.data.orders
       this.pageCount = response.data.orders.last_page

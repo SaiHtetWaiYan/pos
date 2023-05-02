@@ -46,39 +46,32 @@ class OrderController extends Controller
     public function orderHistory(Request $request)
     {
         $user_id = Auth::user()->id;
-        if($request->date){
-            $startDate = $request->date[0];
-            $start = date('Y-m-d', strtotime($startDate));
-            if(is_null($request->date[1])){
-                $orders = Order::with('orderItems')
-                    ->orderBy('id', 'DESC')->where('user_id',$user_id)
-                    ->where('invoice_no', 'LIKE','%'.$request->search.'%')
-                    ->whereDate('created_at',$start)
-                    ->when($request->payment, function ($query) use ($request) {
-                        $query->where('payment_type', $request->payment);
-                    })->paginate($request->perpage);
-            }
-            else{
-                $endDate = $request->date[1];
-                $end = date('Y-m-d', strtotime($endDate));
-                $orders = Order::with('orderItems')
-                    ->orderBy('id', 'DESC')->where('user_id',$user_id)
-                    ->where('invoice_no', 'LIKE','%'.$request->search.'%')
-                    ->whereBetween('created_at', [$start , $end])
-                    ->when($request->payment, function ($query) use ($request) {
-                        $query->where('payment_type', $request->payment);
-                    })->paginate($request->perpage);
-            }
-        }
-        else{
-            $orders = Order::with('orderItems')
-                ->orderBy('id', 'DESC')->where('user_id',$user_id)
-                ->where('invoice_no', 'LIKE','%'.$request->search.'%')
-                ->when($request->payment, function ($query) use ($request) {
-                    $query->where('payment_type', $request->payment);
-                })->paginate($request->perpage);
-        }
 
-        return response()->json(['orders' => $orders ], 200);
+        $orders = Order::with('orderItems')
+            ->orderBy('id', 'DESC')
+            ->where('user_id', $user_id)
+            ->where('invoice_no', 'LIKE', '%' . $request->search . '%')
+            ->when($request->date, function ($query, $date) {
+                $start = date('Y-m-d', strtotime($date[0]));
+                $query->whereDate('created_at', $start);
+                if ($date[1]) {
+                    $end = date('Y-m-d', strtotime($date[1]));
+                    $query->whereBetween('created_at', [$start, $end]);
+                }
+            })
+            ->when($request->discount, function ($query, $discount) {
+                if ($discount === "discount") {
+                    $query->whereNot('discount' ,'=', 0);
+                }
+                if($discount === "no discount"){
+                    $query->where('discount' ,'=', 0);
+                }
+            })
+            ->when($request->payment, function ($query, $payment) {
+                $query->where('payment_type', $payment);
+            })
+            ->paginate($request->perpage);
+
+        return response()->json(['orders' => $orders], 200);
     }
 }
