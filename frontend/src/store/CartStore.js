@@ -4,10 +4,6 @@ export const useCartStore = defineStore({
     id: 'cart',
     state: () => ({
         products: [],
-        subtotal: null,
-        discount: null,
-        total: null
-
     }),
     actions: {
         addItem(product){
@@ -27,11 +23,11 @@ export const useCartStore = defineStore({
         removeItem(index) {
             this.products.splice(index, 1);
         },
-        checkOut(subtotal,discount,total){
-            this.subtotal = subtotal
-            this.discount = discount
-            this.total = total
-        }
+        removeAllItem(){
+            this.products = []
+
+        },
+
     },
     persist: true,
 });

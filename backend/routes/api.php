@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\OrderController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -58,7 +59,10 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('update',[ProductController::class,'update']);
         Route::post('delete',[ProductController::class,'delete']);
         Route::post('restore',[ProductController::class,'restore']);
-        Route::post('addstock',[ProductController::class,'addstock']);
+        Route::post('add/stock',[ProductController::class,'addStock']);
         Route::post('stock',[ProductController::class, 'stock']);
     });
+
+    Route::post('order',[OrderController::class, 'order']);
+    Route::post('order/history',[OrderController::class, 'orderHistory']);
 });

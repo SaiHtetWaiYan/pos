@@ -73,7 +73,7 @@
                             </div>
                             <p class="mt-1 text-sm font-medium text-gray-900">{{ product.price }} Ks</p>
                           </div>
-                            <p class="max-w-full text-base leading-5 font-medium text-gray-700 text-left shadow-sm sm:text-sm">{{product.quantity}}</p>
+                            <p class="max-w-full text-base leading-5 font-medium text-gray-700 text-left sm:text-sm">{{product.quantity}}</p>
                         </div>
 
                       </div>
@@ -104,9 +104,12 @@
                       <dd class="text-base font-medium text-gray-900">{{total}} Ks</dd>
                     </div>
                   </dl>
-
+                  <div class="mt-6" v-if="useAuthStore().user_name === null">
+                    <p class="text-sm text-red-500">Please provide your information in profile tab for purpose order invoice print!</p>
+                  </div>
                   <div class="mt-6">
-                    <button class="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500" @click="print">Confirm & Print</button>
+                    <button v-if="useAuthStore().user_name === null" disabled class="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500">Confirm</button>
+                    <button v-else class="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500" @click="orderConfirm">Confirm</button>
                   </div>
                 </section>
               </div>
@@ -118,10 +121,8 @@
   </TransitionRoot>
 
   <div id="printMe" hidden>
-
-
     <div class="container">
-      <!-- Invoice header -->
+
       <div class="row">
         <div class="col-md-12 mt-5 text-center">
           <h5>{{useAuthStore().shop_name  }}</h5>
@@ -131,18 +132,16 @@
 
       </div>
 
-      <!-- Customer information -->
       <div class="row mt-5">
         <div class="col-md-6">
-          <p>Date: {{`${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`}} {{`${new Date().getHours()}:${new Date().getMinutes()}`}}</p>
+          <p>Date: {{`${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`}} {{`${new Date().getHours()}:${new Date().getMinutes().toLocaleString('my-MM', {minimumIntegerDigits: 2, useGrouping:false})}`}}</p>
 
         </div>
         <div class="col-md-6 text-right">
-          <p>Invoice #: 12345</p>
+          <p>Invoice #: {{ invoice_no }}</p>
         </div>
       </div>
 
-      <!-- Invoice items -->
       <div class="row mt-5">
         <div class="col-md-12">
           <table class="table ">
@@ -151,8 +150,8 @@
               <th></th>
               <th>Item</th>
               <th>Quantity</th>
-              <th>Price</th>
-              <th class="text-right">SubTotal</th>
+              <th>Unit Price</th>
+              <th class="text-right">Amount</th>
             </tr>
             </thead>
             <tbody>
@@ -167,8 +166,7 @@
           </table>
         </div>
       </div>
-
-      <!-- Invoice totals -->
+      <hr>
       <div class="row mt-5">
         <div class="col-md-12 text-right">
           <p>Subtotal: {{ subtotal }} Ks</p>
@@ -184,7 +182,6 @@
         </div>
       </div>
 
-      <!-- Invoice footer -->
       <div class="row mt-5">
         <div class="col-md-12 text-center">
           <p>Thank you for your business!</p>
@@ -204,7 +201,7 @@ import {Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot,} from
 import {CheckIcon, ClockIcon, QuestionMarkCircleIcon, XMarkIcon} from '@heroicons/vue/20/solid'
 import {useCartStore} from "@/store/CartStore.js";
 import {useAuthStore} from "@/store/AuthStore.js";
-
+import axiosInstance from "@/axios.js";
 export default {
   props: {
     subtotal: {
@@ -224,6 +221,7 @@ export default {
       required: true
     }
   },
+  emits: ['passData'],
   components:{
     TransitionRoot,
     TransitionChild,
@@ -240,12 +238,41 @@ export default {
     const products = useCartStore().products
     return{
       useAuthStore,
+      useCartStore,
       isOpen,
       products,
+      isLoading: null,
       imgUrl : import.meta.env.VITE_API_BASE_URL+'/products/',
+      invoice_no : ref(null)
+
     }
   },
   methods:{
+    async orderConfirm(){
+      try {
+        this.isLoading = true
+        setTimeout(() => {
+          this.isLoading = false
+        }, 1000)
+        this.invoice_no = `${new Date().getFullYear()}${new Date().getMonth()+1}${new Date().getDate()}${new Date().getHours()}${new Date().getMinutes().toLocaleString('my-MM', {minimumIntegerDigits: 2, useGrouping:false})}${new Date().getSeconds().toLocaleString('my-MM', {minimumIntegerDigits: 2, useGrouping:false})}`
+        const resource = await axiosInstance.post('/api/order',{
+          user_id: useAuthStore().id,
+          invoice_no : this.invoice_no,
+          products : this.products,
+          subtotal: this.subtotal,
+          discount: this.discount,
+          total: this.total,
+          payment: this.payment,
+        })
+        this.$emit('passData' ,'Order success')
+        this.print()
+        this.isOpen = false
+      }catch (errors)
+      {
+        console.log(errors)
+
+      }
+    },
     closeModal() {
       this.isOpen = false
     },
@@ -254,6 +281,7 @@ export default {
     },
     print() {
       this.$htmlToPaper('printMe')
+      useCartStore().removeAllItem()
     }
 
   }

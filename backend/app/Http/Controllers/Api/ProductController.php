@@ -190,7 +190,7 @@ class ProductController extends Controller
         return response()->json(['stocks'=> $stocks] ,200);
     }
 
-    public function addstock(Request $request)
+    public function addStock(Request $request)
     {
         Product::find($request->product_id)->update([
             'price' => $request->selling_price,

@@ -55,6 +55,11 @@ const routes= [
                 name: 'app.order',
                 component: () => import('@/views/Dashboard/Order/Index.vue'),
             },
+            {
+                path: 'order/history',
+                name: 'app.order.history',
+                component: () => import('@/views/Dashboard/Order/History.vue'),
+            },
 
 
         ]

@@ -73,7 +73,7 @@
               <PopoverButton class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   <span class="sr-only">View notifications</span>
                   <BellIcon class="h-6 w-6" aria-hidden="true" />
-                <span class="absolute -top-2 -right-1 h-4 w-4 rounded-full bg-red-600 text-white flex justify-center items-center items" v-if="useAuthStore().notification === 0"><span>1</span></span>
+                <span class="absolute -top-2 -right-1 h-4 w-4 rounded-full bg-red-600 text-white flex justify-center items-center items" v-if="useAuthStore().user_name === null"><span>1</span></span>
               </PopoverButton>
               <transition
                   enter-active-class="transition duration-200 ease-out"
@@ -84,7 +84,7 @@
                   leave-to-class="translate-y-1 opacity-0"
               >
               <PopoverPanel class="origin-top-right absolute right-0 mt-2 w-72 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                <div class="mx-4 my-2 flex items-center" v-if="useAuthStore().notification === 0">
+                <div class="mx-4 my-2 flex items-center" v-if="useAuthStore().user_name === null">
                   <ExclamationTriangleIcon class="h-10 w-10 text-red-600" aria-hidden="true"/>
                   <div class="ml-2">
                   <p class="text-inline text-sm text-gray-500">Please provide your information in profile tab for purpose order invoice print!</p>
@@ -166,7 +166,8 @@ import {
   CubeIcon,
   ExclamationTriangleIcon,
   TruckIcon,
-  ShoppingCartIcon
+  ShoppingCartIcon,
+  DocumentChartBarIcon
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
@@ -176,6 +177,7 @@ const navigation = [
   { name: 'Supplier', href: '/app/supplier', icon: TruckIcon },
   { name: 'Product', href: '/app/product', icon: CubeIcon },
   { name: 'Order', href: '/app/order', icon: ShoppingCartIcon },
+  { name: 'Order History', href: '/app/order/history', icon: DocumentChartBarIcon },
 ]
 const imgUrl = import.meta.env.VITE_API_BASE_URL+'/users/'
 export default {
@@ -195,7 +197,8 @@ export default {
     PopoverButton,
     PopoverPanel,
     ExclamationTriangleIcon,
-    ShoppingCartIcon
+    ShoppingCartIcon,
+    DocumentChartBarIcon
   },
   setup() {
     const sidebarOpen = ref(false)

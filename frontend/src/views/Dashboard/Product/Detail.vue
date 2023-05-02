@@ -58,7 +58,8 @@
                         </tr>
                         <tr>
                           <td class="w-1/4 pt-3 font-medium text-gray-600">Unit in Stock</td>
-                          <td class="w-3/4 pt-3 text-gray-500 pl-12">{{product.current_stock}}</td>
+                          <td class="w-3/4 pt-3 text-red-500 pl-12" v-if="product.current_stock === 0">Out of Stock</td>
+                          <td class="w-3/4 pt-3 text-gray-500 pl-12" v-else>{{product.current_stock}}</td>
                         </tr>
                         <tr>
                           <td class="w-1/4 pt-3 font-medium text-gray-600">Supplier</td>

@@ -39,7 +39,8 @@
               </DialogTitle>
               <div class="flex flex-inline mt-2">
                 <p class="text-sm font-medium text-gray-700">📈 Remaining Stock</p>
-                <p class="text-sm font-medium text-gray-500 ml-3">{{ current_stock }}</p>
+                <p class="text-sm font-medium text-red-500 ml-3" v-if="current_stock === 0 ">Out of Stock</p>
+                <p class="text-sm font-medium text-red-500 ml-3" v-else>{{ current_stock }}</p>
               </div>
 
               <form @submit.prevent="Add" enctype="multipart/form-data">
@@ -131,7 +132,7 @@ export default {
         setTimeout(() => {
           this.isLoading = false
         }, 1000)
-        await axiosInstance.post('/api/product/addstock',{
+        await axiosInstance.post('/api/product/add/stock',{
           product_id : this.product.id,
           buying_price: this.buying_price,
           selling_price: this.selling_price,

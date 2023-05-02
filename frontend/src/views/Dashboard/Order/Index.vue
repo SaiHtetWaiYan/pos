@@ -40,11 +40,10 @@
               </div>
               <h3 class="mt-4 text-sm text-gray-700">{{product.name}}</h3>
               <p class="mt-1 text-lg font-medium text-gray-900">{{product.price}} Ks</p>
-              <button type="button" @click="addToCart({ id: product.id, name: product.name,photo: product.photo, price: product.price,variant: product.variant, quantity: 1 , stock: product.current_stock})" class="text-yellow-400">Add to cart</button>
+              <p class="text-red-400" v-if="product.current_stock === 0">Out of stock</p>
+              <button type="button" v-else  @click="addToCart({ id: product.id, name: product.name,photo: product.photo, price: product.price,variant: product.variant, quantity: 1 , stock: product.current_stock})" class="text-yellow-400">Add to cart</button>
             </a>
 
-
-            <!-- More products... -->
           </div>
         </div>
 
@@ -127,14 +126,18 @@
               </div>
             </dl>
           </div>
-<!--          <a href="#" onclick="window.open('', '_blank', 'width=600,height=600'); return false;">Print</a>-->
 
-          <Summary :subtotal="subtotalAmount" :discount="discount" :total="total" :payment="payment_type" ></Summary>
+          <Summary :subtotal="subtotalAmount" :discount="discount" :total="total" :payment="payment_type" @passData="getData" v-if="carts.length > 0"></Summary>
         </section>
       </div>
     </div>
   </div>
   </div>
+  <aside v-if="msg" class="fixed bottom-4 right-4 z-50 flex items-center justify-center gap-4 rounded-lg bg-green-400 px-5 py-3 text-white">
+    <span class="text-sm font-medium hover:opacity-75">
+      Hey! {{ msg }} 👋
+    </span>
+  </aside>
 </template>
 
 <script>
@@ -154,13 +157,14 @@ export default {
     let brands = ref([])
     let categories = ref([])
     let suppliers = ref([])
-    const carts = useCartStore().products
+    let carts = ref(useCartStore().products)
     return {
       products,
       brands,
       categories,
       suppliers,
       carts,
+      useCartStore,
       search : null,
       brand: null,
       category: null,
@@ -168,9 +172,7 @@ export default {
       imgUrl : import.meta.env.VITE_API_BASE_URL+'/products/',
       discount: 0,
       payment_type : 'Cash',
-      paid: null,
-      change: null,
-      paidError: null
+      msg: ref(null)
     }
   },
   watch:{
@@ -186,7 +188,6 @@ export default {
     supplier(after,before){
       this.fetchdata()
     },
-
   },
   mounted() {
     this.fetchdata();
@@ -225,11 +226,22 @@ export default {
     removeItem(index){
       useCartStore().removeItem(index)
     },
-    // checkOut(){
-    //   if(!this.paid){
-    //     this.paidError = 'Paid is required'
-    //   }
-    // }
+    getData(value){
+      this.msg = value
+      this.carts =[]
+
+      this.discount = 0
+
+      this.alert()
+
+    },
+    alert(){
+      setTimeout(()=>{
+        this.msg = null
+        this.fetchdata()
+        this.carts = ref(useCartStore().products)
+      },3000)
+    }
   }
 }
 </script>

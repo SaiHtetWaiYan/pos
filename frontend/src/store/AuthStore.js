@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-
+import {useCartStore} from "@/store/CartStore.js"
 export const useAuthStore = defineStore({
     id: 'auth',
     state: () => ({
@@ -16,7 +16,7 @@ export const useAuthStore = defineStore({
         state: null,
         country: null,
         remember: null,
-        notification : 0
+
     }),
     getters: {
         isAuthenticated: (state) => !!state.token,
@@ -41,7 +41,7 @@ export const useAuthStore = defineStore({
             this.city = response.data.userInfo.city
             this.state = response.data.userInfo.state
             this.country = response.data.userInfo.country
-            this.notification = 1
+
         },
         destoryUser(){
             this.token = null
@@ -56,6 +56,7 @@ export const useAuthStore = defineStore({
             this.city = null
             this.state = null
             this.country = null
+            useCartStore().removeAllItem()
         },
         rememberEmail(){
             this.remember = this.email

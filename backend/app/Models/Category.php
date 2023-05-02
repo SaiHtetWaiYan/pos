@@ -15,4 +15,9 @@ class Category extends Model
         'user_id',
         'is_show'
     ];
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }
