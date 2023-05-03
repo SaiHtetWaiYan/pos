@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\DashboardController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,6 +26,9 @@ Route::post('register',[AuthController::class, 'register']);
 Route::middleware('auth:sanctum')->post('logout',[AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->group(function() {
+
+    Route::post('dashboard',[DashboardController::class, 'index']);
+
     Route::post('profile/update',[AuthController::class, 'profileUpdate']);
     Route::post('personalInfo/update',[AuthController::class, 'personalInfoUpdate']);
     Route::post('account/delete',[AuthController::class, 'AccountDelete']);

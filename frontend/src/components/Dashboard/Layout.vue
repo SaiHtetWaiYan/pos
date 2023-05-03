@@ -19,6 +19,12 @@
               <img class="h-10 w-auto" src="@/assets/pos.png" alt="Workflow" />
 
             </div>
+            <div class="flex-shrink-0 flex items-center px-4 mt-5 text-md font-medium text-white bg-blue-300 pt-3">
+              <span class="mr-2">📆 </span>{{ currentDate }}
+            </div>
+            <div class="flex-shrink-0 flex items-center px-4 text-md font-medium text-white bg-blue-300 pb-3">
+              <span class="mr-2 mt-2">⌛</span><p class="mt-2">{{ currentTime }}</p>
+            </div>
             <div class="mt-5 flex-1 h-0 overflow-y-auto">
               <nav class="space-y-1">
                 <router-link  v-for="item in navigation" :key="item.name" v-bind:class="[currentRouteName === item.href ? 'border-s-[3px] border-blue-500 bg-blue-50 text-blue-700' : 'border-l-[3px] border-transparent text-gray-500 hover:border-gray-100 hover:bg-gray-50 hover:text-gray-700', 'flex  items-center gap-2 px-4 py-3']"  :to="item.href" >
@@ -43,7 +49,13 @@
         <div class="flex items-center flex-shrink-0 px-4">
           <img class="h-10 w-auto" src="@/assets/pos.png" alt="Workflow" />
         </div>
+        <div class="flex items-center flex-shrink-0 px-5 mt-5 text-md font-medium text-white bg-blue-300 pt-3">
+          <span class="mr-2">📆 </span>{{ currentDate }}
+        </div>
+        <div class="flex items-center flex-shrink-0 px-5 text-md font-medium text-white bg-blue-300 pb-3">
 
+          <span class="mr-2 mt-2">⌛</span><p class="mt-2">{{ currentTime }}</p>
+        </div>
         <div class="mt-5 flex-grow flex flex-col">
 
           <nav aria-label="Main Nav" class="flex flex-col  pb-4 space-y-1">
@@ -207,7 +219,7 @@ export default {
     DocumentChartBarIcon,
     ChevronDownIcon
   },
-  setup() {
+  data() {
     const sidebarOpen = ref(false)
 
     return {
@@ -215,14 +227,10 @@ export default {
       navigation,
       sidebarOpen,
       imgUrl,
-      time: null,
+      currentTime: '',
+      currentDate: ''
+
     }
-  },
-  mounted() {
-    this.updateTime();
-    setInterval(() => {
-      this.updateTime();
-    }, 1000);
   },
   methods:{
     logout(){
@@ -232,10 +240,16 @@ export default {
       useAuthStore().destoryUser()
       router.push('/')
     },
-    updateTime() {
-      const now = new Date();
-      this.time = now.toLocaleTimeString();
-    },
+  },
+  mounted() {
+    setInterval(() => {
+      const date = new Date();
+      const hours = date.getHours().toString().padStart(2, "0");
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+      const seconds = date.getSeconds().toString().padStart(2, "0");
+      this.currentTime = `${hours}:${minutes}:${seconds}`;
+      this.currentDate = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
+    }, 1000);
   },
   computed: {
     currentRouteName() {

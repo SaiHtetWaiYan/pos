@@ -45,10 +45,10 @@
                         <p class="mt-1 text-gray-500">{{ item.variant }}</p>
                       </div>
                       <p class="row-end-2 row-span-2 font-medium text-gray-900 sm:ml-6 sm:order-1 sm:flex-none sm:w-1/3 sm:text-right">
-                        {{ item.quantity * item.price }} Ks
+                        {{  item.price }} Ks
                       </p>
                       <p class="row-end-2 row-span-2 font-medium text-gray-900 sm:ml-6 sm:order-1 sm:flex-none sm:w-1/3 sm:text-right">
-                        {{ item.price }} Ks
+                        {{ item.quantity * item.price }} Ks
                       </p>
                       <div class="flex items-center sm:flex-none sm:block">
                         <p class="text-base leading-5 font-medium text-gray-700 sm:text-sm">{{item.quantity}}</p>

@@ -1,10 +1,10 @@
 import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
+import '@/style.css'
+import App from '@/App.vue'
 import { createPinia } from 'pinia';
-import router from './router'
+import router from '@/router'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-import VueHtmlToPaper from "./VueHtmlToPaper";
+import VueHtmlToPaper from "@/VueHtmlToPaper";
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate)
