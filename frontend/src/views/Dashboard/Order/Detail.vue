@@ -13,7 +13,7 @@
           <div class="flex text-base text-left transform transition w-full sm:inline-block max-w-3xl sm:my-8 sm:align-middle">
             <div class="w-full relative flex flex-col bg-white pt-6 pb-8 overflow-hidden sm:pb-6 sm:rounded-lg lg:py-8">
               <div class="flex items-center justify-between px-4 sm:px-6 lg:px-8">
-                <h2 class="text-lg font-medium text-gray-900">Order History Detail</h2>
+                <h2 class="text-lg font-medium text-gray-900">Order History</h2>
                 <button type="button" class="text-gray-400 hover:text-gray-500" @click="closeModal">
                   <span class="sr-only">Close</span>
                   <XMarkIcon class="h-6 w-6" aria-hidden="true" />

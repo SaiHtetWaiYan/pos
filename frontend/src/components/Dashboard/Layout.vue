@@ -43,6 +43,7 @@
         <div class="flex items-center flex-shrink-0 px-4">
           <img class="h-10 w-auto" src="@/assets/pos.png" alt="Workflow" />
         </div>
+
         <div class="mt-5 flex-grow flex flex-col">
 
           <nav aria-label="Main Nav" class="flex flex-col  pb-4 space-y-1">
@@ -68,12 +69,12 @@
         <div class="flex-1 px-4 flex justify-between">
           <div class="flex-1 flex">
           </div>
-          <div class="ml-4 flex items-center md:ml-6">
-            <Popover class="relative">
-              <PopoverButton class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <div class="ml-4 flex items-center md:ml-6 ">
+            <Popover class="relative border-r-2 border-gray-300 h-8 ">
+              <PopoverButton class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none mr-4">
                   <span class="sr-only">View notifications</span>
-                  <BellIcon class="h-6 w-6" aria-hidden="true" />
-                <span class="absolute -top-2 -right-1 h-4 w-4 rounded-full bg-red-600 text-white flex justify-center items-center items" v-if="useAuthStore().user_name === null"><span>1</span></span>
+                  <BellIcon class="h-7 w-7" aria-hidden="true" />
+                <span class="absolute -top-2 -right-1 h-4 w-4 rounded-full bg-red-600 text-white flex justify-center items-center items mr-4" v-if="useAuthStore().user_name === null"><span>1</span></span>
               </PopoverButton>
               <transition
                   enter-active-class="transition duration-200 ease-out"
@@ -83,7 +84,7 @@
                   leave-from-class="translate-y-0 opacity-100"
                   leave-to-class="translate-y-1 opacity-0"
               >
-              <PopoverPanel class="origin-top-right absolute right-0 mt-2 w-72 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <PopoverPanel class="origin-top-right absolute right-0 mt-2 w-72 rounded-md shadow-lg py-1 bg-white">
                 <div class="mx-4 my-2 flex items-center" v-if="useAuthStore().user_name === null">
                   <ExclamationTriangleIcon class="h-10 w-10 text-red-600" aria-hidden="true"/>
                   <div class="ml-2">
@@ -104,15 +105,19 @@
             <!-- Profile dropdown -->
             <Menu as="div" class="ml-3 relative">
               <div>
-                <MenuButton class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <MenuButton class="max-w-xs bg-white flex items-center text-sm">
                   <span class="sr-only">Open user menu</span>
                   <img v-if="useAuthStore().photo" class="h-10 w-10 rounded-full" :src="imgUrl+useAuthStore().photo" alt="" />
-                  <span class="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-400" v-else>
+                  <span class="inline-block h-10 w-10 rounded-full overflow-hidden bg-blue-700" v-else>
                     <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                   </span>
+                  <p class="ml-3 text-sm font-semibold text-gray-900">{{useAuthStore().name}}</p>
+                  <ChevronDownIcon class="h-4 w-4 ml-2 mt-1 text-gray-900" aria-hidden="true"/>
+
                 </MenuButton>
+
               </div>
               <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                 <MenuItems class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
@@ -167,7 +172,8 @@ import {
   ExclamationTriangleIcon,
   TruckIcon,
   ShoppingCartIcon,
-  DocumentChartBarIcon
+  DocumentChartBarIcon,
+  ChevronDownIcon
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
@@ -198,7 +204,8 @@ export default {
     PopoverPanel,
     ExclamationTriangleIcon,
     ShoppingCartIcon,
-    DocumentChartBarIcon
+    DocumentChartBarIcon,
+    ChevronDownIcon
   },
   setup() {
     const sidebarOpen = ref(false)
@@ -207,8 +214,15 @@ export default {
       useAuthStore,
       navigation,
       sidebarOpen,
-      imgUrl
+      imgUrl,
+      time: null,
     }
+  },
+  mounted() {
+    this.updateTime();
+    setInterval(() => {
+      this.updateTime();
+    }, 1000);
   },
   methods:{
     logout(){
@@ -217,7 +231,11 @@ export default {
       })
       useAuthStore().destoryUser()
       router.push('/')
-    }
+    },
+    updateTime() {
+      const now = new Date();
+      this.time = now.toLocaleTimeString();
+    },
   },
   computed: {
     currentRouteName() {

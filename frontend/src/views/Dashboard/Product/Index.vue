@@ -34,6 +34,17 @@
         </select>
       </div>
       <div class="col-span-6 sm:col-span-1">
+        <label for="stock" class="block text-sm font-medium text-gray-700">Stock</label>
+        <select id="stock" name="stock" v-model="stock" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          <option :value="null" />
+          <option value="out of stock">Out Of Stock</option>
+          <option value="1 to 10">1 to 10 Stocks</option>
+          <option value="11 to 20">11 to 20 Stocks</option>
+          <option value="over 20">Over 20 Stocks</option>
+        </select>
+
+      </div>
+      <div class="col-span-6 sm:col-span-1">
         <label for="per-page" class="block text-sm font-medium text-gray-700">Per page</label>
         <select id="per-page" name="per-page" v-model="per_page" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
           <option value=10>10</option>
@@ -164,6 +175,7 @@ export default {
       supplier: null,
       per_page : ref('10'),
       trashed : null,
+      stock : null,
       msg: ref(null),
       imgUrl : import.meta.env.VITE_API_BASE_URL+'/products/'
     }
@@ -184,6 +196,9 @@ export default {
     supplier(after,before){
       this.fetchdata()
     },
+    stock(after,before){
+      this.fetchdata()
+    },
     per_page(after,before){
       this.fetchdata()
     },
@@ -198,6 +213,7 @@ export default {
         brand : this.brand,
         category: this.category,
         supplier: this.supplier,
+        stock: this.stock,
         perpage : this.per_page,
         trashed : this.trashed
       })

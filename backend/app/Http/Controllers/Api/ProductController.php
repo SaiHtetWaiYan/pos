@@ -41,6 +41,21 @@ class ProductController extends Controller
                     ->when($request->supplier, function ($query) use ($request) {
                         $query->where('supplier_id', $request->supplier);
                     })
+                    ->when($request->stock, function ($query, $stock) {
+                        if ($stock === 'out of stock' ) {
+                            $query->where('current_stock' ,'=',0);
+                        }
+                        elseif ($stock === '1 to 10' ){
+                            $query->whereBetween('current_stock',[1,10]);
+                        }
+                        elseif ($stock === '11 to 20' ){
+                            $query->whereBetween('current_stock',[11,20]);
+                        }
+                        elseif ($stock === 'over 20'){
+                            $query->where('current_stock','>' , 20);
+                        }
+
+                    })
                     ->orderBy('id', 'DESC')
                     ->paginate($request->perpage);
                 break;
@@ -61,6 +76,21 @@ class ProductController extends Controller
                     ->when($request->supplier, function ($query) use ($request) {
                         $query->where('supplier_id', $request->supplier);
                     })
+                    ->when($request->stock, function ($query, $stock) {
+                        if ($stock === 'out of stock' ) {
+                            $query->where('current_stock' ,'=',0);
+                        }
+                        elseif ($stock === '1 to 10' ){
+                            $query->whereBetween('current_stock',[1,10]);
+                        }
+                        elseif ($stock === '11 to 20' ){
+                            $query->whereBetween('current_stock',[11,20]);
+                        }
+                        elseif ($stock === 'over 20'){
+                            $query->where('current_stock','>' , 20);
+                        }
+
+                    })
                     ->orderBy('id', 'DESC')
                     ->paginate($request->perpage);
                 break;
@@ -78,6 +108,21 @@ class ProductController extends Controller
                     })
                     ->when($request->supplier, function ($query) use ($request) {
                         $query->where('supplier_id', $request->supplier);
+                    })
+                    ->when($request->stock, function ($query, $stock) {
+                        if ($stock === 'out of stock' ) {
+                            $query->where('current_stock' ,'=',0);
+                        }
+                        elseif ($stock === '1 to 10' ){
+                            $query->whereBetween('current_stock',[1,10]);
+                        }
+                        elseif ($stock === '11 to 20' ){
+                            $query->whereBetween('current_stock',[11,20]);
+                        }
+                        elseif ($stock === 'over 20'){
+                            $query->where('current_stock','>' , 20);
+                        }
+
                     })
                     ->orderBy('id', 'DESC')
                     ->paginate($request->perpage);
@@ -130,10 +175,25 @@ class ProductController extends Controller
     public function update(Request $request)
     {
         $check = Product::where('id',$request->id)->first();
+        $StockPrice = StockPrice::find($request->last_stock_id)->first();
         if($check->code !== $request->code){
             if (!empty(Product::where('user_id', Auth::user()->id)->where('code', $request->code)->first())) {
                 return response()->json(['codeError' => 'Product code already exits!'], 401);
             }
+        }
+        if($StockPrice->buying_price != $request->buying_price){
+
+            $request->validate([
+                'reason' => 'required|string|max:255',
+            ]);
+
+        }
+        if($StockPrice->selling_price != $request->selling_price){
+
+            $request->validate([
+                'reason' => 'required|string|max:255',
+            ]);
+
         }
         if($check->current_stock != $request->stock){
 
@@ -141,8 +201,8 @@ class ProductController extends Controller
                 'reason' => 'required|string|max:255',
             ]);
 
-
         }
+
         if ($request->hasFile('photo')) {
             $request->validate([
                 'photo' => 'mimes:jpg,jpeg,png|max:2048'
@@ -169,7 +229,7 @@ class ProductController extends Controller
         ]);
 
         $diff = $request->stock - $check->current_stock ;
-        $StockPrice = StockPrice::find($request->last_stock_id)->first();
+
         $newstock = $StockPrice->stock + $diff;
         $StockPrice->update([
             'buying_price' => $request->buying_price,
