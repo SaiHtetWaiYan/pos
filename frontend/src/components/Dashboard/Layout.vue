@@ -248,7 +248,7 @@ export default {
       const minutes = date.getMinutes().toString().padStart(2, "0");
       const seconds = date.getSeconds().toString().padStart(2, "0");
       this.currentTime = `${hours}:${minutes}:${seconds}`;
-      this.currentDate = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
+      this.currentDate = date.toLocaleDateString();
     }, 1000);
   },
   computed: {
