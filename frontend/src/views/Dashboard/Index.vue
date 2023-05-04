@@ -4,7 +4,7 @@
     <div class="lg:grid lg:grid-cols-12 lg:gap-x-16">
       <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
 
-        <DatePicker v-model.range="range" expanded />
+        <DatePicker v-model.range="range"   expanded />
 
       </div>
       <div class="mt-4 divide-y divide-gray-100 text-sm leading-6 lg:col-span-7 xl:col-span-8">
@@ -112,9 +112,10 @@ export default {
     ArrowTrendingUpIcon
   },
   data() {
+
     const range = ref({
-      start: new Date(),
-      end: new Date()
+      start: new Date().toLocaleDateString(),
+      end: new Date().toLocaleDateString()
     });
     return {
       range,
@@ -129,6 +130,8 @@ export default {
   },
   watch:{
     range(after,before){
+      this.range.start =this.range.start.toLocaleDateString()
+      this.range.end = this.range.end.toLocaleDateString()
       this.fetchdata()
     },
   },
