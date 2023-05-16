@@ -24,6 +24,7 @@
 
 [https://app.onlinepos.store](https://app.onlinepos.store/)
 
+The frontend of the current demo project is running on [Netlify](https://www.netlify.com), while the backend is running on [DigitalOcean](https://www.digitalocean.com)
 
 ## Project setup
 
