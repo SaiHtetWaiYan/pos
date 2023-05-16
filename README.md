@@ -1,5 +1,8 @@
 # Online Pos Platform
 
+<a href="https://github.com/SaiHtetWaiYan/pos/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/SaiHtetWaiYan/pos">
+</a>
 
 
 🧶 A application build with Laravel , Sanctum , Vite.js , Vue.js , Pinia and Tailwindcss  .
