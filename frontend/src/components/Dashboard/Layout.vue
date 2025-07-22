@@ -19,12 +19,12 @@
               <img class="h-10 w-auto" src="@/assets/pos.png" alt="Workflow" />
 
             </div>
-            <div class="flex-shrink-0 flex items-center px-4 mt-5 text-md font-medium text-white bg-blue-300 pt-3">
+            <!-- <div class="flex-shrink-0 flex items-center px-4 mt-5 text-md font-medium text-white bg-blue-300 pt-3">
               <span class="mr-2">📆 </span>{{ currentDate }}
             </div>
             <div class="flex-shrink-0 flex items-center px-4 text-md font-medium text-white bg-blue-300 pb-3">
               <span class="mr-2 mt-2">⌛</span><p class="mt-2">{{ currentTime }}</p>
-            </div>
+            </div> -->
             <div class="mt-5 flex-1 h-0 overflow-y-auto">
               <nav class="space-y-1">
                 <router-link  v-for="item in navigation" :key="item.name" v-bind:class="[currentRouteName === item.href ? 'border-s-[3px] border-blue-500 bg-blue-50 text-blue-700' : 'border-l-[3px] border-transparent text-gray-500 hover:border-gray-100 hover:bg-gray-50 hover:text-gray-700', 'flex  items-center gap-2 px-4 py-3']"  :to="item.href" >
@@ -47,15 +47,19 @@
       <!-- Sidebar component, swap this element with another sidebar if you like -->
       <div class="flex flex-col flex-grow border-r border-gray-200 pt-5 bg-white overflow-y-auto">
         <div class="flex items-center flex-shrink-0 px-4">
-          <img class="h-10 w-auto" src="@/assets/pos.png" alt="Workflow" />
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ml-1">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25" />
+</svg>
+
+          <h4 class="text-lg font-medium ml-1 text-gray-600">Point of Sale</h4>
         </div>
-        <div class="flex items-center flex-shrink-0 px-5 mt-5 text-md font-medium text-white bg-blue-300 pt-3">
+        <!-- <div class="flex items-center flex-shrink-0 px-5 mt-5 text-md font-medium text-white bg-blue-300 pt-3">
           <span class="mr-2">📆 </span>{{ currentDate }}
         </div>
         <div class="flex items-center flex-shrink-0 px-5 text-md font-medium text-white bg-blue-300 pb-3">
 
           <span class="mr-2 mt-2">⌛</span><p class="mt-2">{{ currentTime }}</p>
-        </div>
+        </div> -->
         <div class="mt-5 flex-grow flex flex-col">
 
           <nav aria-label="Main Nav" class="flex flex-col  pb-4 space-y-1">
