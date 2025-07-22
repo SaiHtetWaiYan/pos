@@ -4,10 +4,10 @@
     <img src="https://img.shields.io/github/license/SaiHtetWaiYan/pos">
 </a>
 
-
-🧶 A application build with Laravel , Sanctum , Vite.js , Vue.js , Pinia and Tailwindcss  .
+🧶 A application build with Laravel , Sanctum , Vite.js , Vue.js , Pinia and Tailwindcss .
 
 ## Resources
+
 - [Laravel](https://laravel.com)
 - [Sanctum](https://laravel.com/docs/10.x/sanctum)
 - [Vite](https://vitejs.dev/)
@@ -19,19 +19,12 @@
 - [Tailwindcss](https://tailwindcss.com)
 - [Heroicons](https://heroicons.dev)
 
-
-## Demo
-
-[https://app.onlinepos.store](https://app.onlinepos.store/)
-
-The frontend of the current demo project is running on [Netlify](https://www.netlify.com), while the backend is running on [DigitalOcean](https://www.digitalocean.com)
-
 ## Project setup
 
 Clone the repo locally:
 
 ```sh
-git clone https://github.com/SaiHtetWaiYan/pos.git 
+git clone https://github.com/SaiHtetWaiYan/pos.git
 cd pos
 ```
 
@@ -74,7 +67,6 @@ DB_DATABASE= database name
 DB_USERNAME= database user name
 DB_PASSWORD= database password
 ```
-
 
 Run database migrations:
 
